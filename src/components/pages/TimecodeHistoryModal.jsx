@@ -5,14 +5,13 @@ import { IoAdd } from "react-icons/io5";
 import NewTimecodeModal from './NewTimecodeModal';
 
 const TimecodeHistoryModal = ({ isOpen, onClose, movieTitle }) => {
-  // Mock data for timecode history
+  //Mock data*
   const mockTimecodes = [
     { id: 1, time: "00:23:45", label: "Car chase scene", date: "2025-03-12" },
     { id: 2, time: "01:05:22", label: "Plot twist", date: "2025-03-10" },
     { id: 3, time: "00:45:10", label: "Funny dialogue", date: "2025-03-08" }
   ];
 
-  // State to control NewTimecodeModal visibility
   const [isNewTimecodeModalOpen, setIsNewTimecodeModalOpen] = React.useState(false);
 
   if (!isOpen) return null;

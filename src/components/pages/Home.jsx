@@ -88,7 +88,6 @@ const Home = () => {
             <button 
             className="filter-apply-btn" 
             onClick={() => console.log("Filter button clicked")}>
-            Filter
                 <CiFilter className="filter-icon" />
             </button>
 

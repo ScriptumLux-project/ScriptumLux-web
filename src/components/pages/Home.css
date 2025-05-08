@@ -47,6 +47,7 @@
     
   }
   
+  
   .movie-card:hover {
     transform: scale(1.02);
     border-color: #f0c63e;
@@ -160,36 +161,30 @@
 
   /*filter*/
   .filter-apply-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: 20px;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 113px; 
-    height: 32px;
-    gap: 9px; 
-    padding: 8px 12px;
-    background-color: #f0c63e;
-    color: white;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 50px;
+    transition: transform 0.3s ease;
   }
  
 .filter-apply-btn:hover {
-    background-color: #f0c63e;
-    transform: scale(1.05); 
-    box-shadow:
-      0 0 10px rgba(255, 255, 255, 0.4),
-      0 0 20px rgba(255, 255, 255, 0.1);
+    transform: scale(1.2);
 }
 
 .filter-icon {
-    font-size: 24px;
-    text-align: right;
+    font-size: 28px;
+    color: #f5ebdd;
+    transition: color 0.3s ease;
   }
+
+.filter-apply-btn:hover .filter-icon {
+    color: #f0c63e;
+}
 
   
 

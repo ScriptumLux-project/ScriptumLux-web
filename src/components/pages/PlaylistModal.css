@@ -68,7 +68,6 @@
 
 .playlist-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 12px 15px;
   background-color: rgba(108, 108, 108, 0.1);
@@ -79,6 +78,39 @@
 
 .playlist-item:hover {
   background-color: rgba(240, 198, 62, 0.1);
+}
+
+.playlist-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #666;
+  border-radius: 3px;
+  margin-right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.playlist-item.selected .playlist-checkbox {
+  border-color: #f0c63e;
+  background-color: rgba(240, 198, 62, 0.1);
+}
+
+.checkbox-inner {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+  border-radius: 1px;
+}
+
+.playlist-item.selected .checkbox-inner {
+  background-color: #f0c63e;
+}
+
+.playlist-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .playlist-name {
@@ -93,75 +125,37 @@
   font-size: 14px;
 }
 
-.create-playlist {
+.no-playlists {
+  color: #666;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.create-new-playlist-btn, .add-to-playlist-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #f0c63e;
-  cursor: pointer;
-  padding: 10px 0;
-  transition: transform 0.2s ease;
-}
-
-.create-playlist:hover {
-  transform: translateX(5px);
-}
-
-.add-icon {
-  font-size: 20px;
-}
-
-.new-playlist-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.new-playlist-form input {
-  padding: 12px 15px;
-  background-color: rgba(108, 108, 108, 0.1);
-  border: 1px solid #333;
-  border-radius: 6px;
-  color: #f5ebdd;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-}
-
-.new-playlist-form input:focus {
-  border-color: #f0c63e;
-  outline: none;
-}
-
-.playlist-form-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.playlist-form-actions button {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.playlist-form-actions button:first-child {
-  background-color: transparent;
-  border: 1px solid #666;
-  color: #f5ebdd;
-}
-
-.playlist-form-actions button:last-child {
+  justify-content: center;
+  gap: 8px;
   background-color: #f0c63e;
-  border: none;
   color: #14142B;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  width: 100%;
 }
 
-.playlist-form-actions button:hover {
+.create-new-playlist-btn:hover, .add-to-playlist-btn:hover {
   opacity: 0.9;
+}
+
+.add-to-playlist-btn {
+  background-color: #f0c63e; 
+  animation: fadeIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {

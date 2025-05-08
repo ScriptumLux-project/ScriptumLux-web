@@ -223,11 +223,11 @@ const MovieDetails = () => {
             </div>
 
             <div className="movie-icons">
-            {/*<MdHistory 
+            {<MdHistory 
               className="movie-icon" 
-              onClick={openHistoryModal}
+              /*onClick={openHistoryModal}*/
               title="Timecode History"
-            />*/}
+            />}
             <RxLapTimer 
               className="movie-icon" 
               onClick={openHistoryModal}

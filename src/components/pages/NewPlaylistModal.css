@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.new-playlist-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.new-playlist-modal-container {
+  background-color: #090919;
+  border-radius: 8px;
+  width: 380px;
+  max-width: 90%;
+  padding: 0;
+  border: 1.5px solid #666;
+  position: relative;
+  overflow: hidden;
+}
+
+.new-playlist-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+}
+
+.new-playlist-modal-header h2 {
+  margin: 0;
+  color: #f5ebdd;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.new-playlist-close-icon {
+  color: #666;
+  font-size: 22px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.new-playlist-close-icon:hover {
+  color: #f0c63e;
+}
+
+.new-playlist-modal-content {
+  padding: 20px;
+}
+
+.new-playlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #f5ebdd;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 12px 15px;
+  background-color: rgba(108, 108, 108, 0.1);
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #f5ebdd;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  border-color: #f0c63e;
+  outline: none;
+}
+
+.movie-info {
+  color: #666;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+.movie-info strong {
+  font-weight: 500;
+  color: #f5ebdd;
+}
+
+.new-playlist-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.new-playlist-form-actions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  border: 1px solid #666;
+  color: #f5ebdd;
+}
+
+.create-btn {
+  background-color: #f0c63e;
+  border: none;
+  color: #14142B;
+  font-weight: 500;
+}
+
+.new-playlist-form-actions button:hover {
+  opacity: 0.9;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -25,14 +25,26 @@ const NewTimecodeModal = ({ isOpen, onClose, movieTitle, currentTime = "00:45:30
           
           <form onSubmit={handleSubmit} className="timecode-form">
             <div className="timecode-form-group">
-              <label htmlFor="timecode">Time:</label>
+      
               <input
                 type="text"
                 id="timecode"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                placeholder="HH:MM:SS"
+                placeholder="Time (HH:MM:SS)"
                 pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                required
+              />
+            </div>
+
+            <div className="timecode-form-group">
+              
+              <input
+                type="text"
+                id="label"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="Title or Description"
                 required
               />
             </div>

@@ -19,7 +19,7 @@
 .navbar-logo a {
     font-size: 24px;
     margin-left: 40px;
-    color: #666;
+    color: #f0c63e;
     text-decoration: none;
     font-weight: 500;
 }
@@ -37,8 +37,12 @@
 }
 
 .nav-link:hover {
-    color: #f0c63e;;
+    color: #f0c63e;
     transform: scale(1.05); 
+}
+
+.nav-link.active {
+    color: #f0c63e;
 }
 
 .navbar-search {
@@ -125,7 +129,7 @@
     justify-content: center;
     padding: 8px 16px;
     background-color: #f0c63e;
-    color: white;
+    color: #090919;
     font-weight: 500;
     font-family: 'Poppins', sans-serif;
     border-radius: 10px;
