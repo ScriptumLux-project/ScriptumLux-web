@@ -49,7 +49,10 @@ const NewTimecodeModal = ({ isOpen, onClose, movieTitle, currentTime = "00:45:30
               />
             </div>
             
-            <button type="submit" className="timecode-save-btn">Save Timecode</button>
+            <div className="timecode-form-actions">
+              <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+              <button type="submit" className="save-btn">Create</button>
+            </div>
           </form>
         </div>
       </div>

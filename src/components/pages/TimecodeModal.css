@@ -205,3 +205,36 @@
 .create-new-timecode-btn:hover {
     transform: scale(1.05); 
 }
+
+.timecode-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.timecode-form-actions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  border: 1px solid #666;
+  color: #f5ebdd;
+}
+
+.save-btn {
+  background-color: #f0c63e;
+  border: none;
+  color: #14142B;
+  font-weight: 500;
+}
+
+.timecode-form-actions button:hover {
+  opacity: 0.9;
+}
