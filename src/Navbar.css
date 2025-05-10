@@ -88,22 +88,6 @@
     box-shadow: 0 0 0 2px rgba(240, 198, 62, 0.2);
 }
 
-/*account*/
-.account-icon {
-    font-size: 40px;
-    color: #666;     
-    transition: color 0.3s ease;
-  }
-  
-  .account-icon:hover {
-    border-color: #f0c63e;
-    transform: scale(1.1); 
-  }
-
-  .dropdown-icon {
-    font-size: 30px;
-  }
-  
 /*LogIn*/
 .login-btn {
     padding: 8px 16px;
@@ -147,3 +131,64 @@
       0 0 20px rgba(255, 255, 255, 0.1);
     outline: none;
 }
+
+/*user*/
+.user-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-icon-group {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #666; 
+    transition: color 0.3s ease;
+  }
+  
+  .user-icon-group:hover {
+    color: #f0c63e;
+  }
+  
+  .user-icon {
+    font-size: 40px;
+  }
+  
+  .dropdown-arrow {
+    font-size: 22px;
+    margin-left: 4px;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background-color: #090919; 
+    border: 1px solid #666;
+    border-radius: 8px;
+    padding: 10px 0;
+    z-index: 999;
+    min-width: 160px;
+  }
+  
+  .dropdown-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 20px;
+    color: #f5ebdd; 
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #222;
+    color: #f0c63e;
+  }

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './components/context/AuthContext'; 
 import { CiSearch } from "react-icons/ci";
 import { RiAccountCircleLine } from "react-icons/ri";
+import { RiArrowDropDownLine } from 'react-icons/ri';
 import './Navbar.css';
 import LoginModal from './components/authorization/Login';
 import SignUpModal from './components/authorization/SignUp';
@@ -16,6 +17,10 @@ const Navbar = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const toggleDropdown = () => setShowDropdown(prev => !prev);
+
   const handleLogout = () => {
     logout();                       
     localStorage.removeItem('accessToken');  
@@ -81,13 +86,21 @@ const Navbar = () => {
           <Link to="/main" className={location.pathname === '/main' ? 'nav-link active' : 'nav-link'}>About Us</Link>
 
           {currentUser ? (
-            <RiAccountCircleLine 
-            className="nav-link account-icon"
-            onClick={handleLogout}
-            title="Log Out"
-            style={{ cursor: 'pointer' }}
-            />
-           ) : (//else*
+            <div className="user-dropdown">
+              <div className="user-icon-group" onClick={toggleDropdown}>
+                <RiAccountCircleLine className="user-icon" />
+                <RiArrowDropDownLine className="dropdown-arrow" />
+              </div>
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  <Link to="/account" className="dropdown-item">Account</Link>
+                  <Link to="/playlist" className="dropdown-item">Playlist</Link>
+                  <Link to="/history" className="dropdown-item">History</Link>
+                  <button onClick={handleLogout} className="dropdown-item">Log Out</button>
+                </div>
+              )}
+            </div>
+          ) : (
             <>
               <button onClick={openLoginModal} className="login-btn">Log In</button>
               <button onClick={openSignUpModal} className="signup-btn">Sign Up</button>
