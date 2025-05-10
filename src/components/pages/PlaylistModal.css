@@ -135,22 +135,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background-color: #f0c63e;
-  color: #14142B;
-  border: none;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid #f0c63e;
   border-radius: 6px;
-  padding: 10px 15px;
+  color: #f0c63e;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.2s ease, background-color 0.2s ease;
-  width: 100%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: fit-content;
+  margin: 20px auto 0;
 }
 
 .create-new-playlist-btn:hover, .add-to-playlist-btn:hover {
-  opacity: 0.9;
+  transform: scale(1.05);
 }
 
 .add-to-playlist-btn {

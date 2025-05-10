@@ -186,7 +186,6 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin-top: 20px;
   padding: 8px 16px;
   background-color: transparent;
   border: 1px solid #f0c63e;
@@ -196,10 +195,9 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 20px auto 0;
 }
 
 .create-new-timecode-btn:hover {
@@ -224,8 +222,8 @@
 
 .cancel-btn {
   background-color: transparent;
-  border: 1px solid #666;
-  color: #f5ebdd;
+  border: 1px solid #f0c63e;
+  color: #f0c63e;
 }
 
 .save-btn {

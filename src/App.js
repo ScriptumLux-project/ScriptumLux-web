@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './Navbar';
 import Home from './components/pages/Home';
 import MovieDetails from './components/pages/MovieDetails';
+import Account from './components/pages/Account';
 import { AuthProvider } from './components/context/AuthContext';
 import { MovieProvider } from './components/context/MovieContext';
 
@@ -42,6 +43,15 @@ function App() {
               } />
               
               { /*----------------------Protection----------------------*/}
+              <Route path="/account" element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                     <Account />
+                  </>
+                </ProtectedRoute>
+              } />
+
               <Route path="/playlists" element={
                 <ProtectedRoute>
                   <>
