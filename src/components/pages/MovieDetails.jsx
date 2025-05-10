@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMovies } from '../context/MovieContext';
+import { useAuth } from '../context/AuthContext'; //+1*
 import { FaStar, FaRegStar, FaStarHalfAlt, FaPlay } from 'react-icons/fa';
 import { MdHistory } from "react-icons/md";
 import { RxLapTimer } from "react-icons/rx";
@@ -12,13 +13,14 @@ import './MovieDetails.css';
 import TimecodeHistoryModal from './TimecodeHistoryModal';
 import NewTimecodeModal from './NewTimecodeModal';
 import PlaylistModal from './PlaylistModal';
-
-
+import Login from '../authorization/Login'; //+1*
+import SignUp from '../authorization/SignUp'; //+1*
 
 const MovieDetails = () => {
   const { movieId } = useParams();
   const navigate = useNavigate();
   const { getMovieById } = useMovies();
+  const { isAuthenticated } = useAuth(); //+1*
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
@@ -27,6 +29,9 @@ const MovieDetails = () => {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isNewTimecodeModalOpen, setIsNewTimecodeModalOpen] = useState(false);
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+  //+*
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -84,9 +89,15 @@ const MovieDetails = () => {
     return stars;
   };
 
+  //+*
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
+    
+    if (!isAuthenticated()) {
+      openLoginModal();
+      return;
+    }
     
     const comment = {
       id: comments.length + 1,
@@ -99,13 +110,51 @@ const MovieDetails = () => {
     setNewComment('');
   };
 
-  const openHistoryModal = () => setIsHistoryModalOpen(true);
+  //+*
+  const openLoginModal = () => {
+    setIsLoginModalOpen(true);
+    setIsSignUpModalOpen(false);
+  };
+  
+  const closeLoginModal = () => {
+    setIsLoginModalOpen(false);
+  };
+  
+  const openSignUpModal = () => {
+    setIsSignUpModalOpen(true);
+    setIsLoginModalOpen(false);
+  };
+  
+  const closeSignUpModal = () => {
+    setIsSignUpModalOpen(false);
+  };
+
+  const handleHistoryClick = () => {
+    if (!isAuthenticated()) {
+      openLoginModal();
+    } else {
+      setIsHistoryModalOpen(true);
+    }
+  };
+  
+  const handleNewTimecodeClick = () => {
+    if (!isAuthenticated()) {
+      openLoginModal();
+    } else {
+      setIsNewTimecodeModalOpen(true);
+    }
+  };
+  
+  const handlePlaylistClick = () => {
+    if (!isAuthenticated()) {
+      openLoginModal();
+    } else {
+      setIsPlaylistModalOpen(true);
+    }
+  };
+  
   const closeHistoryModal = () => setIsHistoryModalOpen(false);
-  
-  const openNewTimecodeModal = () => setIsNewTimecodeModalOpen(true);
   const closeNewTimecodeModal = () => setIsNewTimecodeModalOpen(false);
-  
-  const openPlaylistModal = () => setIsPlaylistModalOpen(true);
   const closePlaylistModal = () => setIsPlaylistModalOpen(false);
 
   if (loading) {
@@ -223,19 +272,19 @@ const MovieDetails = () => {
             </div>
 
             <div className="movie-icons">
-            {<MdHistory 
+            <MdHistory 
               className="movie-icon" 
-              /*onClick={openHistoryModal}*/
+              /*onClick={handleHistoryClick}*/
               title="Timecode History"
-            />}
+            />
             <RxLapTimer 
               className="movie-icon" 
-              onClick={openHistoryModal}
+              onClick={handleHistoryClick}
               title="Timecode History"
             />
             <MdPlaylistPlay 
               className="movie-icon" 
-              onClick={openPlaylistModal}
+              onClick={handlePlaylistClick}
               title="Add to Playlist"
             />
           </div>
@@ -247,7 +296,7 @@ const MovieDetails = () => {
           <h2 className="section-title">Comments</h2>
           
           <form className="comment-form" onSubmit={handleCommentSubmit}>
-          <div class="comment-input-wrapper">
+          <div className="comment-input-wrapper">
             <textarea 
               className="comment-input"
               placeholder="Leave a comment..."
@@ -283,8 +332,7 @@ const MovieDetails = () => {
         </div>
       </div>
  
-
-<TimecodeHistoryModal 
+      <TimecodeHistoryModal 
         isOpen={isHistoryModalOpen}
         onClose={closeHistoryModal}
         movieTitle={movie.title}
@@ -300,6 +348,19 @@ const MovieDetails = () => {
         isOpen={isPlaylistModalOpen}
         onClose={closePlaylistModal}
         movieTitle={movie.title}
+      />
+      
+      {/*+*/}
+      <Login 
+        isOpen={isLoginModalOpen}
+        onClose={closeLoginModal}
+        switchToSignUp={openSignUpModal}
+      />
+      
+      <SignUp 
+        isOpen={isSignUpModalOpen}
+        onClose={closeSignUpModal}
+        switchToLogin={openLoginModal}
       />
       </div>
   
