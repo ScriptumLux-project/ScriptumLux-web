@@ -5,6 +5,7 @@ import Home from './components/pages/Home';
 import MovieDetails from './components/pages/MovieDetails';
 import Account from './components/pages/Account';
 import Playlists from './components/pages/Playlists';
+import History from './components/pages/History';
 import { AuthProvider } from './components/context/AuthContext';
 import { MovieProvider } from './components/context/MovieContext';
 
@@ -49,6 +50,15 @@ function App() {
                   <>
                     <Navbar />
                      <Account />
+                  </>
+                </ProtectedRoute>
+              } />
+
+              <Route path="/history" element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                     <History />
                   </>
                 </ProtectedRoute>
               } />

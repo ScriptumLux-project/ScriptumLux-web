@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.history-page {
+  min-height: 100vh;
+  background-color: #090919;
+  padding-top: 64px;
+  padding-bottom: 40px;
+  font-family: 'Poppins', sans-serif;
+  color: #666;
+  overflow: auto;
+}
+
+.history-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+.history-header {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.history-title {
+  font-size: 24px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.history-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.history-delete-btn {
+  background-color: transparent;
+  color: #f5ebdd;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  text-decoration: none;
+  margin-bottom: 30px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.history-delete-icon {
+  font-size: 20px;
+}
+
+.history-delete-btn:hover {
+  color: #f0c63e;
+  transform: scale(1.05);
+}
+
+.history-movies {
+  display: flex;
+  flex-direction: column; 
+  gap: 20px;
+}
+
+.history-movie {
+  padding: 20px;
+}
+
+.history-movie-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.history-movie-poster {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.history-movie-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column; 
+  max-width: 466px;
+  word-wrap: break-word; 
+  line-height: 2;  
+  overflow: hidden;  
+  text-overflow: ellipsis;
+}
+
+.history-movie-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.history-movie-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.history-movie-delete {
+    color: #f5ebdd;
+    background: transparent;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease; 
+}
+
+.history-movie-delete:hover {
+ color: #f0c63e;
+ transform: scale(1.3);
+}
+
+.history-movie-genre,
+.history-movie-description,
+.history-movie-director,
+.history-movie-year {
+  font-size: 16px;
+  color: #666;
+  margin: 0; 
+}
+
+.history-movie-description {
+  font-size: 14px; 
+  max-width: 500px;  
+  word-wrap: break-word;  
+  line-height: 1.5; 
+  overflow: hidden;  
+  text-overflow: ellipsis;  
+}

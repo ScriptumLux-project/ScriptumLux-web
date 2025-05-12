@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Playlists.css';
 import { IoIosArrowBack } from "react-icons/io";
-import NewPlaylistModal from './NewPlaylistModal';
+import NewPlaylistModal from '../modals/NewPlaylistModal';
 
 const Playlists = () => {
   const [playlists, setPlaylists] = useState([

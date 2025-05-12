@@ -10,9 +10,9 @@ import { MdPlaylistPlay } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
 import { mockMovieDetails, mockComments } from '../../mockData/data';
 import './MovieDetails.css';
-import TimecodeHistoryModal from './TimecodeHistoryModal';
-import NewTimecodeModal from './NewTimecodeModal';
-import PlaylistModal from './PlaylistModal';
+import TimecodeHistoryModal from '../modals/TimecodeHistoryModal';
+import NewTimecodeModal from '../modals/NewTimecodeModal';
+import PlaylistModal from '../modals/PlaylistModal';
 import Login from '../authorization/Login'; //+1*
 import SignUp from '../authorization/SignUp'; //+1*
 
