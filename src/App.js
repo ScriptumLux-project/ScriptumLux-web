@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Home from './components/pages/Home';
 import MovieDetails from './components/pages/MovieDetails';
 import Account from './components/pages/Account';
+import Playlists from './components/pages/Playlists';
 import { AuthProvider } from './components/context/AuthContext';
 import { MovieProvider } from './components/context/MovieContext';
 
@@ -56,7 +57,7 @@ function App() {
                 <ProtectedRoute>
                   <>
                     <Navbar />
-                    {/*/<Playlists />*/}
+                    <Playlists />
                   </>
                 </ProtectedRoute>
               } />

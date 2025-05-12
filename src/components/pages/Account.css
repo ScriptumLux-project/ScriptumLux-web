@@ -70,7 +70,6 @@
   position: relative;
 }
 
-/* Новый контейнер для кнопок */
 .account-buttons {
   display: flex;
   align-items: center;

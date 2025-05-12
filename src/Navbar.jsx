@@ -94,7 +94,7 @@ const Navbar = () => {
               {showDropdown && (
                 <div className="dropdown-menu">
                   <Link to="/account" className="dropdown-item">Account</Link>
-                  <Link to="/playlist" className="dropdown-item">Playlist</Link>
+                  <Link to="/playlists" className="dropdown-item">Playlist</Link>
                   <Link to="/history" className="dropdown-item">History</Link>
                   <button onClick={handleLogout} className="dropdown-item">Log Out</button>
                 </div>

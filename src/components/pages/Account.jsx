@@ -56,7 +56,7 @@ const Account = () => {
             <h2 className="account-section-title">Playlists</h2>
             <div className="account-buttons">
               <Link to="/playlists/create" className="account-create-btn">+ Create</Link>
-              <Link to="/playlist" className="account-seeall-btn">See All</Link>
+              <Link to="/playlists" className="account-seeall-btn">See All</Link>
             </div>
           </div>
           <div className="account-grid">
