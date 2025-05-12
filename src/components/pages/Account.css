@@ -33,6 +33,22 @@
   flex-shrink: 0;
 }
 
+.account-avatar {
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    width: 110px;
+    height: 110px;
+  }
+  
+  .account-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #666;
+  }
+  
 .account-icon {
   font-size: 110px;
   color: #666;

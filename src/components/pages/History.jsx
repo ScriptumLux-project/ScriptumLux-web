@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { RiDeleteBinLine } from 'react-icons/ri';
+import { FaRegTrashAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosArrowBack } from "react-icons/io";
 import { mockMovies } from '../../mockData/data';
@@ -30,7 +30,7 @@ const History = () => {
           <h1 className="history-title">History</h1>
           <div className="history-buttons">
             <button onClick={deleteHistory} className="history-delete-btn">
-              <RiDeleteBinLine className="history-delete-icon" /> Delete History
+              <FaRegTrashAlt  className="history-delete-icon" /> Delete History
             </button>
           </div>
         </div>
