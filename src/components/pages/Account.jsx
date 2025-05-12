@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 import { RiAccountCircleLine } from 'react-icons/ri';
 import { useState } from 'react';
 import './Account.css';
+import './Playlists.css'; 
+import './History.css'; 
 import { useMovies } from '../context/MovieContext'; 
+import { usePlaylists } from '../context/PlaylistContext';
 
 const Account = () => {
     const { movies } = useMovies();
+    const { playlists } = usePlaylists();
   
-    const [avatar, setAvatar] = useState(null); // для пользовательского изображения
+    const [avatar, setAvatar] = useState(null);
   
     const handleAvatarChange = (e) => {
       const file = e.target.files[0];
@@ -23,11 +27,8 @@ const Account = () => {
       email: 'juser@gmail.com',
     };
   
-    const historyMovies = movies.slice(0, 6);
-    const playlists = [
-      { id: 1, title: 'Sci-Fi Collection', posterUrl: '/posters/playlist1.jpg' },
-      { id: 2, title: 'Oscar Winners', posterUrl: '/posters/playlist2.jpg' },
-    ];
+    const historyMovies = movies.slice(0, 8);
+    const displayPlaylists = playlists.slice(0, 4); 
   
     return (
       <div className="account-page">
@@ -62,11 +63,15 @@ const Account = () => {
             <h2 className="account-section-title">History</h2>
             <Link to="/history" className="account-seeall-btn">See All</Link>
           </div>
-          <div className="account-grid">
+          
+          {/* +History.css */}
+          <div className="history-movies account-history-grid">
             {historyMovies.map(movie => (
-              <div key={movie.id} className="account-card">
-                <img src={movie.posterUrl} alt={movie.title} className="account-poster" />
-                <h3 className="account-card-title">{movie.title}</h3>
+              <div key={movie.id} className="account-history-item">
+                <Link to={`/movies/${movie.id}`}>
+                  <img src={movie.posterUrl} alt={movie.title} className="history-movie-poster" />
+                  <h3 className="account-card-title">{movie.title}</h3>
+                </Link>
               </div>
             ))}
           </div>
@@ -81,11 +86,19 @@ const Account = () => {
               <Link to="/playlists" className="account-seeall-btn">See All</Link>
             </div>
           </div>
-          <div className="account-grid">
-            {playlists.map(playlist => (
-              <div key={playlist.id} className="account-card">
-                <img src={playlist.posterUrl} alt={playlist.title} className="account-poster" />
-                <h3 className="account-card-title">{playlist.title}</h3>
+          
+          {/* +Playlists.css */}
+          <div className="playlists-grid account-playlists-grid">
+            {displayPlaylists.map(playlist => (
+              <div key={playlist.id} className="playlist-card">
+                <div className="playlist-card-bg"></div>
+                <div className="playlist-card-bg-white"></div>
+                <div className="playlist-card-wrapper">
+                  <Link to={`/playlists/${playlist.id}`}>
+                    <img src={playlist.posterUrl} alt={playlist.title} className="playlist-poster" />
+                    <h3 className="playlist-card-title">{playlist.title}</h3>
+                  </Link>
+                </div>
               </div>
             ))}
           </div>

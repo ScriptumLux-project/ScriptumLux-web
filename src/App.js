@@ -8,6 +8,7 @@ import Playlists from './components/pages/Playlists';
 import History from './components/pages/History';
 import { AuthProvider } from './components/context/AuthContext';
 import { MovieProvider } from './components/context/MovieContext';
+import { PlaylistProvider } from './components/context/PlaylistContext';
 
 function App() {
   const isAuthenticated = () => {
@@ -26,6 +27,7 @@ function App() {
   return (
     <AuthProvider>
       <MovieProvider>
+      <PlaylistProvider>
         <Router>
           <div className="App">
             <Routes>
@@ -85,6 +87,7 @@ function App() {
             </Routes>
           </div>
         </Router> 
+        </PlaylistProvider>
       </MovieProvider>
     </AuthProvider>
   );

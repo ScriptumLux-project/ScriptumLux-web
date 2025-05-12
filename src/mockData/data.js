@@ -44,6 +44,7 @@ export const mockMovies = [
       year: 1999,
       posterUrl: "https://m.media-amazon.com/images/M/MV5BMmEzNTkxYjQtZTc0MC00YTVjLTg5ZTEtZWMwOWVlYzY0NWIwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg"
     }
+    
   ];
   
   export const genresList = [
