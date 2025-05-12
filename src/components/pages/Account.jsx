@@ -7,13 +7,29 @@ import './Playlists.css';
 import './History.css'; 
 import { useMovies } from '../context/MovieContext'; 
 import { usePlaylists } from '../context/PlaylistContext';
+import NewPlaylistModal from '../modals/NewPlaylistModal';
 
 const Account = () => {
     const { movies } = useMovies();
-    const { playlists } = usePlaylists();
-  
+    const { playlists, setPlaylists } = usePlaylists();
+
     const [avatar, setAvatar] = useState(null);
+    const [isNewPlaylistModalOpen, setIsNewPlaylistModalOpen] = useState(false);
+
   
+    const openNewPlaylistModal = () => setIsNewPlaylistModalOpen(true);
+    const closeNewPlaylistModal = () => setIsNewPlaylistModalOpen(false);
+
+    const handleCreatePlaylist = (newPlaylistName) => {
+        const newPlaylist = {
+            id: playlists.length + 1,
+            title: newPlaylistName,
+            posterUrl: '/assets/icon_playlist.jpg', 
+        };
+        setPlaylists([...playlists, newPlaylist]);
+        closeNewPlaylistModal();
+    };
+
     const handleAvatarChange = (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -82,7 +98,7 @@ const Account = () => {
           <div className="account-section-header">
             <h2 className="account-section-title">Playlists</h2>
             <div className="account-buttons">
-              <Link to="/playlists/create" className="account-create-btn">+ Create</Link>
+            <button onClick={openNewPlaylistModal} className="account-create-btn">+ Create</button>
               <Link to="/playlists" className="account-seeall-btn">See All</Link>
             </div>
           </div>
@@ -104,6 +120,15 @@ const Account = () => {
           </div>
         </div>
       </div>
+      {isNewPlaylistModalOpen && (
+  <NewPlaylistModal
+    isOpen={isNewPlaylistModalOpen}
+    onClose={closeNewPlaylistModal}
+    movieTitle="None selected"
+    onPlaylistCreate={handleCreatePlaylist}
+  />
+)}
+      
     </div>
   );
 };
