@@ -6,12 +6,16 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { mockMovies } from '../../mockData/data';
 import { usePlaylists } from '../context/PlaylistContext';
+import EditPlaylistModal from '../modals/EditPlaylistModal'; 
+
 import './PlaylistDetails.css';
 
 const PlaylistDetails = () => {
   const { playlistId } = useParams();
   const { playlists, setPlaylists } = usePlaylists();
   const [playlistMovies, setPlaylistMovies] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   
   const currentPlaylist = playlists.find(playlist => playlist.id === parseInt(playlistId));
   
@@ -26,10 +30,21 @@ const PlaylistDetails = () => {
     setPlaylists(playlists.filter(playlist => playlist.id !== parseInt(playlistId)));
     window.location.href = '/playlists';
   };
+
+  const handleSaveTitle = (newTitle) => {
+    const updatedPlaylists = playlists.map((playlist) =>
+      playlist.id === parseInt(playlistId)
+        ? { ...playlist, title: newTitle }
+        : playlist
+    );
+    setPlaylists(updatedPlaylists);
+  };
+  
   
   if (!currentPlaylist) {
     return <div className="playlist-details-page">Playlist not found</div>;
   }
+  
 
   return (        
      <div className="playlist-details-page">
@@ -46,15 +61,16 @@ const PlaylistDetails = () => {
             </div>
         
             <div className="playlist-details-content">
-  {/* Левая часть: холдер */}
+
   <div className="playlist-details-main">
     <div className="playlist-holder">
       <img src={currentPlaylist.posterUrl} alt={currentPlaylist.title} className="playlist-holder-image" />
       <h3 className="playlist-holder-title">{currentPlaylist.title}</h3>
       <div className="playlist-holder-buttons">
-        <button className="edit-button">
-          <MdModeEdit /> Edit
-        </button>
+      <button className="edit-button" onClick={() => setIsEditModalOpen(true)}>
+  <MdModeEdit /> Edit
+</button>
+
         <button className="delete-button" onClick={deletePlaylist}>
           <FaRegTrashAlt /> Delete
         </button>
@@ -62,7 +78,6 @@ const PlaylistDetails = () => {
     </div>
   </div>
 
-  {/* Правая часть: фильмы */}
   <div className="playlist-details-side">
     <div className="playlist-movies-list">
       {playlistMovies.length === 0 ? (
@@ -93,6 +108,13 @@ const PlaylistDetails = () => {
 </div>
 
     </div>
+    <EditPlaylistModal
+  isOpen={isEditModalOpen}
+  onClose={() => setIsEditModalOpen(false)}
+  currentTitle={currentPlaylist.title}
+  onSave={handleSaveTitle}
+/>
+
     </div>
   );
 };
