@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-text: #666;
+  --color-accent: #f0c63e;
+  --color-background: #090919;
+  --color-light: #f5ebdd;
+}
+
+body, .playlist-details-page {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+}
+
+.playlist-details-page {
+  min-height: 100vh;
+  padding: 64px 0 40px;
+  overflow: auto;
+}
+
+.playlist-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+.playlist-details-header {
+  margin: 20px 0;
+}
+
+.playlist-details-title,
+.playlist-details-subtitle,
+.playlist-movies-title {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.playlist-details-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.playlist-details-subtitle,
+.playlist-movies-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.playlist-details-content {
+  display: flex;
+  gap: 40px;
+  margin-top: 30px;
+  align-items: flex-start;
+}
+
+.playlist-details-main {
+  flex-basis: 30%;
+}
+
+.playlist-details-side {
+  flex-basis: 70%;
+  margin-top: -125px;
+}
+
+.button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  max-width: 120px;
+}
+
+.button:hover {
+  transform: scale(1.03);
+  opacity: 0.9;
+}
+
+.button-edit {
+  background-color: var(--color-accent);
+  color: #14142B;
+  border: none;
+  font-weight: 500;
+}
+
+.button-delete {
+  background-color: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.playlist-action-buttons,
+.playlist-holder-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.playlist-holder {
+  width: 383px;
+  height: 428px;
+  padding: 20px;
+  border-radius: 30px 60px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.0) 60%, rgba(0,0,0,0.2) 100%);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.playlist-holder-image {
+  width: 250px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.playlist-holder-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-light);
+  text-align: center;
+  margin: 0;
+}
+
+.playlist-movies {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.playlist-movie-item {
+  padding: 20px;
+}
+
+.playlist-movie-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.playlist-movie-poster {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.playlist-movie-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 466px;
+  word-wrap: break-word;
+  line-height: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-movie-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.playlist-movie-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.playlist-movie-remove {
+  color: var(--color-light);
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.playlist-movie-remove:hover {
+  color: var(--color-accent);
+  transform: scale(1.3);
+}
+
+.playlist-movie-genre,
+.playlist-movie-description,
+.playlist-movie-director,
+.playlist-movie-year {
+  font-size: 16px;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.playlist-movie-description {
+  font-size: 14px;
+  max-width: 500px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-movies-message {
+  color: var(--color-text);
+  font-style: italic;
+}

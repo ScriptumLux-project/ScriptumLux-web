@@ -9,6 +9,7 @@ import History from './components/pages/History';
 import { AuthProvider } from './components/context/AuthContext';
 import { MovieProvider } from './components/context/MovieContext';
 import { PlaylistProvider } from './components/context/PlaylistContext';
+import PlaylistDetails from './components/pages/PlaylistDetails';
 
 function App() {
   const isAuthenticated = () => {
@@ -70,6 +71,15 @@ function App() {
                   <>
                     <Navbar />
                     <Playlists />
+                  </>
+                </ProtectedRoute>
+              } />
+
+               <Route path="/playlists/:playlistId" element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <PlaylistDetails />
                   </>
                 </ProtectedRoute>
               } />

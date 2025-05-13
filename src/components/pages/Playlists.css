@@ -152,3 +152,74 @@
     left: 50%;
     transform: translateX(-50%);
 }
+
+.playlist-holder {
+  width: 100%;
+  max-width: 290px;
+  height: auto;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.0) 60%, rgba(0,0,0,0.2) 100%);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.playlist-holder-image {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.playlist-holder-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f5ebdd;
+  text-align: center;
+  margin: 0;
+}
+
+.playlist-holder-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+}
+
+.playlist-holder-buttons .edit-button,
+.playlist-holder-buttons .delete-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  max-width: 120px;
+}
+
+.edit-button {
+  background-color: #f0c63e;
+  color: #14142B;
+  border: none;
+  font-weight: 500;
+}
+
+.delete-button {
+  background-color: transparent;
+  color: #f0c63e;
+  border: 1px solid #f0c63e;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  transform: scale(1.05);
+}

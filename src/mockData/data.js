@@ -78,14 +78,7 @@ export const mockMovieDetails = {
     country: "United States",
     language: "English",
     storyline: "Dom Cobb is a skilled thief, the absolute best in the dangerous art of extraction, stealing valuable secrets from deep within the subconscious during the dream state, when the mind is at its most vulnerable. Cobb's rare ability has made him a coveted player in this treacherous new world of corporate espionage, but it has also made him an international fugitive and cost him everything he has ever loved. Now Cobb is being offered a chance at redemption. One last job could give him his life back but only if he can accomplish the impossible, inception. Instead of the perfect heist, Cobb and his team of specialists have to pull off the reverse: their task is not to steal an idea, but to plant one. If they succeed, it could be the perfect crime. But no amount of careful planning or expertise can prepare the team for the dangerous enemy that seems to predict their every move. An enemy that only Cobb could have seen coming.",
-    cast: [
-      { id: 1, name: "Leonardo DiCaprio", character: "Dom Cobb", imageUrl: "/api/placeholder/180/200" },
-      { id: 2, name: "Joseph Gordon-Levitt", character: "Arthur", imageUrl: "/api/placeholder/180/200" },
-      { id: 3, name: "Elliot Page", character: "Ariadne", imageUrl: "/api/placeholder/180/200" },
-      { id: 4, name: "Tom Hardy", character: "Eames", imageUrl: "/api/placeholder/180/200" },
-      { id: 5, name: "Ken Watanabe", character: "Saito", imageUrl: "/api/placeholder/180/200" },
-      { id: 6, name: "Dileep Rao", character: "Yusuf", imageUrl: "/api/placeholder/180/200" }
-    ]
+    
   },
   2: {
     rating: 9.3,
@@ -93,12 +86,7 @@ export const mockMovieDetails = {
     country: "United States",
     language: "English",
     storyline: "Chronicles the experiences of a formerly successful banker as a prisoner in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit. The film portrays the man's unique way of dealing with his new, torturous life; along the way he befriends a number of fellow prisoners, most notably a wise long-term inmate named Red. Over the years, Andy finds ways to live out life with some dignity and purpose, all while a terrible warden threatens to take it all away.",
-    cast: [
-      { id: 7, name: "Tim Robbins", character: "Andy Dufresne", imageUrl: "/api/placeholder/180/200" },
-      { id: 8, name: "Morgan Freeman", character: "Ellis Boyd 'Red' Redding", imageUrl: "/api/placeholder/180/200" },
-      { id: 9, name: "Bob Gunton", character: "Warden Norton", imageUrl: "/api/placeholder/180/200" },
-      { id: 10, name: "William Sadler", character: "Heywood", imageUrl: "/api/placeholder/180/200" }
-    ]
+    
   },
   3: {
     rating: 9.0,
@@ -106,13 +94,7 @@ export const mockMovieDetails = {
     country: "United States",
     language: "English",
     storyline: "Set within a year after the events of Batman Begins (2005), Batman, Lieutenant James Gordon, and new District Attorney Harvey Dent successfully begin to round up the criminals that plague Gotham City, until a mysterious and sadistic criminal mastermind known only as \"The Joker\" appears in Gotham, creating a new wave of chaos. Batman's struggle against The Joker becomes deeply personal, forcing him to \"confront everything he believes\" and improve his technology to stop him. A love triangle develops between Bruce Wayne, Dent, and Rachel Dawes.",
-    cast: [
-      { id: 11, name: "Christian Bale", character: "Bruce Wayne / Batman", imageUrl: "/api/placeholder/180/200" },
-      { id: 12, name: "Heath Ledger", character: "Joker", imageUrl: "/api/placeholder/180/200" },
-      { id: 13, name: "Aaron Eckhart", character: "Harvey Dent / Two-Face", imageUrl: "/api/placeholder/180/200" },
-      { id: 14, name: "Michael Caine", character: "Alfred", imageUrl: "/api/placeholder/180/200" },
-      { id: 15, name: "Gary Oldman", character: "James Gordon", imageUrl: "/api/placeholder/180/200" }
-    ]
+    
   },
   4: {
     rating: 8.9,
@@ -120,13 +102,7 @@ export const mockMovieDetails = {
     country: "United States",
     language: "English",
     storyline: "Jules Winnfield and Vincent Vega are two hitmen who are out to retrieve a suitcase stolen from their employer, mob boss Marsellus Wallace. Wallace has also asked Vincent to take his wife Mia out a few days later when Wallace himself will be out of town. Butch Coolidge is an aging boxer who is paid by Wallace to lose his fight. The lives of these seemingly unrelated people are woven together comprising of a series of funny, bizarre and uncalled-for incidents.",
-    cast: [
-      { id: 16, name: "John Travolta", character: "Vincent Vega", imageUrl: "/api/placeholder/180/200" },
-      { id: 17, name: "Samuel L. Jackson", character: "Jules Winnfield", imageUrl: "/api/placeholder/180/200" },
-      { id: 18, name: "Uma Thurman", character: "Mia Wallace", imageUrl: "/api/placeholder/180/200" },
-      { id: 19, name: "Bruce Willis", character: "Butch Coolidge", imageUrl: "/api/placeholder/180/200" },
-      { id: 20, name: "Ving Rhames", character: "Marsellus Wallace", imageUrl: "/api/placeholder/180/200" }
-    ]
+    
   },
   5: {
     rating: 8.8,
@@ -134,12 +110,7 @@ export const mockMovieDetails = {
     country: "United States",
     language: "English",
     storyline: "A nameless first person narrator (Edward Norton) attends support groups in attempt to subdue his emotional state and relieve his insomniac state. When he meets Marla (Helena Bonham Carter), another fake attendee of support groups, his life seems to become a little more bearable. However when he associates himself with Tyler (Brad Pitt) he is dragged into an underground fight club and soap making scheme. Together the two men spiral out of control and engage in competitive rivalry for love and power.",
-    cast: [
-      { id: 21, name: "Brad Pitt", character: "Tyler Durden", imageUrl: "/api/placeholder/180/200" },
-      { id: 22, name: "Edward Norton", character: "The Narrator", imageUrl: "/api/placeholder/180/200" },
-      { id: 23, name: "Helena Bonham Carter", character: "Marla Singer", imageUrl: "/api/placeholder/180/200" },
-      { id: 24, name: "Meat Loaf", character: "Robert 'Bob' Paulsen", imageUrl: "/api/placeholder/180/200" }
-    ]
+    
   }
 };
 

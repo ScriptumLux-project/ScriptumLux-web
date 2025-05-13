@@ -44,7 +44,6 @@ const MovieDetails = () => {
             rating: 8.0,
             releaseDate: "Unknown",
             country: "Unknown",
-            language: "English",
             duration: foundMovie.duration || "Unknown",
             storyline: foundMovie.description,
             cast: []
@@ -212,12 +211,7 @@ const MovieDetails = () => {
               <span className="detail-label">Country:</span>
               <span className="detail-value">{movie.country}</span>
             </div>
-            
-            <div className="detail-item">
-              <span className="detail-label">Language:</span>
-              <span className="detail-value">{movie.language}</span>
-            </div>
-            
+      
             <div className="detail-item">
               <span className="detail-label">Release Date:</span>
               <span className="detail-value">{movie.releaseDate}</span>
@@ -240,25 +234,6 @@ const MovieDetails = () => {
             <p className="storyline-text">
               {movie.storyline}
             </p>
-          </div>
-        </div>
-        
-        {/*cast*/}
-        <div className="cast-section">
-  <h2 className="section-title">Cast</h2>
-  <div className="cast-list-container">
-    {movie.cast && movie.cast.length > 0 ? (
-      <div className="cast-list">
-        {movie.cast.map(actor => (
-          <div key={actor.id} className="cast-list-item">
-            <span className="actor-name">{actor.name}</span>
-            <span className="actor-role">{actor.character}</span>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p>Cast information not available</p>
-    )}
           </div>
         </div>
         

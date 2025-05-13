@@ -83,8 +83,7 @@ const Navbar = () => {
           </div>
 
           <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>Catalogue</Link>
-          <Link to="/main" className={location.pathname === '/main' ? 'nav-link active' : 'nav-link'}>About Us</Link>
-
+          
           {currentUser ? (
             <div className="user-dropdown">
               <div className="user-icon-group" onClick={toggleDropdown}>
