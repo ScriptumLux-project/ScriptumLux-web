@@ -1,34 +1,60 @@
-import React, { createContext, useState, useContext } from 'react';
+// src/components/context/PlaylistContext.js
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { getPlaylists, createPlaylist, deletePlaylist, updatePlaylist, addMovieToPlaylist } from '../../api';
 
-const PlaylistContext = createContext();
+const PlaylistContext = createContext(null);
 
 export const PlaylistProvider = ({ children }) => {
-  const [playlists, setPlaylists] = useState([
-    { id: 1, title: 'Sci-Fi Collection', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 2, title: 'Oscar Winners', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 3, title: 'Horror Classics', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 4, title: 'Documentaries', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 5, title: 'Animation Movies', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 6, title: 'Comedy Favorites', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 7, title: 'Action Movies', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 8, title: 'Drama Collection', posterUrl: '/assets/icon_playlist.jpg' }
-  ]);
+  const [playlists, setPlaylists] = useState([]);
+  const [loading,    setLoading]  = useState(true);
 
-  const addPlaylist = (newPlaylist) => {
-    setPlaylists([...playlists, newPlaylist]);
+  useEffect(() => {
+    getPlaylists()
+        .then(data => {
+          setPlaylists(data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+  }, []);
+
+  const addNewPlaylist = async (title, firstMovieId = null) => {
+    const pl = await createPlaylist(title, firstMovieId);
+    setPlaylists(prev => [...prev, pl]);
+    return pl;
+  };
+
+  const removePlaylist = async (id) => {
+    await deletePlaylist(id);
+    setPlaylists(prev => prev.filter(p => p.id !== id));
+  };
+
+  const renamePlaylist = async (id, newTitle) => {
+    const pl = await updatePlaylist(id, { title: newTitle });
+    setPlaylists(prev => prev.map(p => p.id === id ? pl : p));
+    return pl;
+  };
+
+  const addToPlaylist = async (playlistId, movieId) => {
+    const pl = await addMovieToPlaylist(playlistId, movieId);
+    // обновим локальный стейт: найдём плейлист и добавим movieId
+    setPlaylists(prev => prev.map(p => {
+      if (p.id === playlistId) {
+        return { ...pl }; // сервер вернёт обновлённый объект
+      }
+      return p;
+    }));
+    return pl;
   };
 
   return (
-    <PlaylistContext.Provider value={{ playlists, setPlaylists, addPlaylist }}>
-      {children}
-    </PlaylistContext.Provider>
+      <PlaylistContext.Provider value={{
+        playlists, loading,
+        addNewPlaylist, removePlaylist,
+        renamePlaylist, addToPlaylist
+      }}>
+        {children}
+      </PlaylistContext.Provider>
   );
 };
 
-export const usePlaylists = () => {
-  const context = useContext(PlaylistContext);
-  if (!context) {
-    throw new Error('usePlaylists must be used within a PlaylistProvider');
-  }
-  return context;
-};
+export const usePlaylists = () => useContext(PlaylistContext);

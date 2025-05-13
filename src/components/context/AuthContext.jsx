@@ -1,11 +1,12 @@
+// src/components/context/AuthContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { mockUsers } from '../../mockData/data';
+import { login as apiLogin, signup as apiSignup } from '../../api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading,     setLoading]     = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -14,24 +15,21 @@ export const AuthProvider = ({ children }) => {
     }
     setLoading(false);
   }, []);
-  
 
-  const login = (email, password) => {
-    const user = mockUsers.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-      const { password, ...safeUserData } = user;
-      
-      const token = `mock-token-${Date.now()}`;
-      
-      localStorage.setItem('accessToken', token);
-      localStorage.setItem('user', JSON.stringify(safeUserData));
-      
-      setCurrentUser(safeUserData);
-      return { success: true, user: safeUserData };
-    }
-    
-    return { success: false, message: 'Invalid email or password' };
+  const login = async (email, password) => {
+    const { user, token } = await apiLogin(email, password);
+    localStorage.setItem('accessToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    setCurrentUser(user);
+    return user;
+  };
+
+  const signup = async (email, password, nickname) => {
+    const { user, token } = await apiSignup(email, password, nickname);
+    localStorage.setItem('accessToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    setCurrentUser(user);
+    return user;
   };
 
   const logout = () => {
@@ -40,45 +38,16 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
-  const register = (userData) => {
-    const existingUser = mockUsers.find(u => u.email === userData.email);
-    
-    if (existingUser) {
-      return { success: false, message: 'User with this email already exists' };
-    }
-    
-    const newUser = {
-      id: mockUsers.length + 1,
-      ...userData,
-      role: 'user'
-    };
-    
-    const { password, ...safeUserData } = newUser;
-    const token = `mock-token-${Date.now()}`;
-    
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('user', JSON.stringify(safeUserData));
-    
-    setCurrentUser(safeUserData);
-    return { success: true, user: safeUserData };
-  };
+  const isAuthenticated = () => !!localStorage.getItem('accessToken');
 
-  const isAuthenticated = () => {
-    return localStorage.getItem('accessToken') !== null;
-  };
-
-  const value = {
-    currentUser,
-    login,
-    logout,
-    register,
-    isAuthenticated,
-    loading
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+      <AuthContext.Provider value={{
+        currentUser, loading,
+        login, signup, logout, isAuthenticated
+      }}>
+        {children}
+      </AuthContext.Provider>
+  );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
