@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useMovies } from '../context/MovieContext';
-import { useAuth } from '../context/AuthContext'; //+1*
+import { useMovies } from '../../context/MovieContext';
+import { useAuth } from '../../context/AuthContext'; //+1*
 import { FaStar, FaRegStar, FaStarHalfAlt, FaPlay } from 'react-icons/fa';
 import { MdHistory } from "react-icons/md";
 import { RxLapTimer } from "react-icons/rx";
 import { MdPlaylistPlay } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
-import { mockMovieDetails, mockComments } from '../../mockData/data';
+import { mockMovieDetails, mockComments } from '../../../mockData/data';
 import './MovieDetails.css';
-import TimecodeHistoryModal from '../modals/TimecodeHistoryModal';
-import NewTimecodeModal from '../modals/NewTimecodeModal';
-import PlaylistModal from '../modals/PlaylistModal';
-import Login from '../authorization/Login'; //+1*
-import SignUp from '../authorization/SignUp'; //+1*
+import TimecodeHistoryModal from '../../modals/TimecodeHistoryModal';
+import NewTimecodeModal from '../../modals/NewTimecodeModal';
+import PlaylistModal from '../../modals/PlaylistModal';
+import Login from '../../authorization/Login'; //+1*
+import SignUp from '../../authorization/SignUp'; //+1*
 
 const MovieDetails = () => {
   const { movieId } = useParams();

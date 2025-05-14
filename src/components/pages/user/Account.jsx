@@ -5,9 +5,9 @@ import { useState } from 'react';
 import './Account.css';
 import './Playlists.css'; 
 import './History.css'; 
-import { useMovies } from '../context/MovieContext'; 
-import { usePlaylists } from '../context/PlaylistContext';
-import NewPlaylistModal from '../modals/NewPlaylistModal';
+import { useMovies } from '../../context/MovieContext'; 
+import { usePlaylists } from '../../context/PlaylistContext';
+import NewPlaylistModal from '../../modals/NewPlaylistModal';
 
 const Account = () => {
     const { movies } = useMovies();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useMovies } from '../context/MovieContext';
+import { useMovies } from '../../context/MovieContext';
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { CiFilter } from "react-icons/ci";
 import './Home.css';

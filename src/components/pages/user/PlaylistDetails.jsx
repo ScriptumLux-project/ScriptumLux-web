@@ -7,11 +7,11 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiTrash2 } from "react-icons/fi";
 import { MdHistory } from "react-icons/md";
 import { MdPlaylistAdd } from "react-icons/md";
-import { mockMovies } from '../../mockData/data';
-import { usePlaylists } from '../context/PlaylistContext';
-import EditPlaylistModal from '../modals/EditPlaylistModal'; 
-import DropdownMenu from '../modals/DropdownMenu';
-import PlaylistModal from '../modals/PlaylistModal';
+import { mockMovies } from '../../../mockData/data';
+import { usePlaylists } from '../../context/PlaylistContext';
+import EditPlaylistModal from '../../modals/EditPlaylistModal'; 
+import DropdownMenu from '../../modals/DropdownMenu';
+import PlaylistModal from '../../modals/PlaylistModal';
 
 import './PlaylistDetails.css';
 

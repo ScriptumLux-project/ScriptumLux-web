@@ -83,6 +83,12 @@ const Navbar = () => {
           </div>
 
           <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>Catalogue</Link>
+
+          {currentUser && (
+            <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'nav-link active' : 'nav-link'}>
+              Dashboard
+            </Link>
+          )}
           
           {currentUser ? (
             <div className="user-dropdown">
@@ -95,6 +101,7 @@ const Navbar = () => {
                   <Link to="/account" className="navbar-dropdown-item">Account</Link>
                   <Link to="/playlists" className="navbar-dropdown-item">Playlist</Link>
                   <Link to="/history" className="navbar-dropdown-item">History</Link>
+                  <Link to="/dashboard" className="navbar-dropdown-item">Dashboard</Link>
                   <button onClick={handleLogout} className="navbar-dropdown-item">Log Out</button>
                 </div>
               )}

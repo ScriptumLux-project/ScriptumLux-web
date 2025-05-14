@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosArrowBack } from "react-icons/io";
-import { mockMovies } from '../../mockData/data';
+import { mockMovies } from '../../../mockData/data';
 import './History.css';
 
 const History = () => {

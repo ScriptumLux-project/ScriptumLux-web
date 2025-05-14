@@ -1,15 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import Home from './components/pages/Home';
-import MovieDetails from './components/pages/MovieDetails';
-import Account from './components/pages/Account';
-import Playlists from './components/pages/Playlists';
-import History from './components/pages/History';
+import Home from './components/pages/user/Home';
+import MovieDetails from './components/pages/user/MovieDetails';
+import Account from './components/pages/user/Account';
+import Playlists from './components/pages/user/Playlists';
+import History from './components/pages/user/History';
+import Dashboard from './components/pages/admin/Dashboard';
 import { AuthProvider } from './components/context/AuthContext';
 import { MovieProvider } from './components/context/MovieContext';
 import { PlaylistProvider } from './components/context/PlaylistContext';
-import PlaylistDetails from './components/pages/PlaylistDetails';
+import PlaylistDetails from './components/pages/user/PlaylistDetails';
 
 function App() {
   const isAuthenticated = () => {
@@ -89,6 +90,15 @@ function App() {
                   <>
                     <Navbar />
                     {/*<Timecodes />*/}
+                  </>
+                </ProtectedRoute>
+              } />
+
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <>
+                    <Navbar />
+                    <Dashboard />
                   </>
                 </ProtectedRoute>
               } />
