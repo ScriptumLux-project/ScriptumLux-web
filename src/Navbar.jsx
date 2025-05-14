@@ -91,11 +91,11 @@ const Navbar = () => {
                 <RiArrowDropDownLine className="dropdown-arrow" />
               </div>
               {showDropdown && (
-                <div className="dropdown-menu">
-                  <Link to="/account" className="dropdown-item">Account</Link>
-                  <Link to="/playlists" className="dropdown-item">Playlist</Link>
-                  <Link to="/history" className="dropdown-item">History</Link>
-                  <button onClick={handleLogout} className="dropdown-item">Log Out</button>
+                <div className="navbar-dropdown-menu">
+                  <Link to="/account" className="navbar-dropdown-item">Account</Link>
+                  <Link to="/playlists" className="navbar-dropdown-item">Playlist</Link>
+                  <Link to="/history" className="navbar-dropdown-item">History</Link>
+                  <button onClick={handleLogout} className="navbar-dropdown-item">Log Out</button>
                 </div>
               )}
             </div>

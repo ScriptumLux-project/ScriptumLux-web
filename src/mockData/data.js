@@ -43,6 +43,50 @@ export const mockMovies = [
       director: "David Fincher",
       year: 1999,
       posterUrl: "https://m.media-amazon.com/images/M/MV5BMmEzNTkxYjQtZTc0MC00YTVjLTg5ZTEtZWMwOWVlYzY0NWIwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg"
+    },
+    {
+      id: 6,
+      title: "The Matrix",
+      genres: [{ id: 1, name: "Sci-Fi" }, { id: 2, name: "Action" }],
+      description: "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+      director: "Lana Wachowski, Lilly Wachowski",
+      year: 1999,
+      posterUrl: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
+      rating: 8.7,
+      duration: "2h 16m"
+    },
+    {
+      id: 7,
+      title: "Interstellar",
+      genres: [{ id: 1, name: "Sci-Fi" }, { id: 5, name: "Drama" }, { id: 6, name: "Adventure" }],
+      description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+      director: "Christopher Nolan",
+      year: 2014,
+      posterUrl: "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
+      rating: 8.6,
+      duration: "2h 49m"
+    },
+    {
+      id: 8,
+      title: "The Godfather",
+      genres: [{ id: 4, name: "Crime" }, { id: 5, name: "Drama" }],
+      description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+      director: "Francis Ford Coppola",
+      year: 1972,
+      posterUrl: "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
+      rating: 9.2,
+      duration: "2h 55m"
+    },
+    {
+      id: 9,
+      title: "Forrest Gump",
+      genres: [{ id: 5, name: "Drama" }, { id: 7, name: "Romance" }],
+      description: "The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other history unfold through the perspective of an Alabama man with an IQ of 75.",
+      director: "Robert Zemeckis",
+      year: 1994,
+      posterUrl: "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg",
+      rating: 8.8,
+      duration: "2h 22m"
     }
     
   ];
