@@ -27,41 +27,7 @@ const Dashboard = () => {
         <div className="admin-dashboard-header">
           <h1>Admin Dashboard Page</h1>
         </div>
-        
-        <div className="admin-navigation-tabs">
-          <div className="admin-tabs-container">
-            <div 
-              className={`admin-tab ${activeTab === 'Website name' ? 'active' : ''}`}
-              onClick={() => handleTabClick('Website name')}
-            >
-              Website name
-            </div>
-            <div 
-              className={`admin-tab ${activeTab === 'Movies' ? 'active' : ''}`}
-              onClick={() => handleTabClick('Movies')}
-            >
-              Movies
-            </div>
-            <div 
-              className={`admin-tab ${activeTab === 'Dashboard' ? 'active' : ''}`}
-              onClick={() => handleTabClick('Dashboard')}
-            >
-              Dashboard
-            </div>
-            <div 
-              className={`admin-tab ${activeTab === 'Profile' ? 'active' : ''}`}
-              onClick={() => handleTabClick('Profile')}
-            >
-              Profile
-            </div>
-          </div>
-          
-          <div className="admin-user-section">
-            <div className="admin-name">Admin Name</div>
-            <button className="admin-logout-btn" onClick={handleLogout}>LOG OUT</button>
-          </div>
-        </div>
-        
+            
         <div className="admin-dashboard-underline"></div>
         
         <div className="admin-main-content">

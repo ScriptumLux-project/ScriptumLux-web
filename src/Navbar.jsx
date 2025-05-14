@@ -19,6 +19,9 @@ const Navbar = () => {
   
   const [showDropdown, setShowDropdown] = useState(false);
 
+  //verification for the Dashboard styles**
+  const isDashboard = location.pathname === '/dashboard';
+
   const toggleDropdown = () => setShowDropdown(prev => !prev);
 
   const handleLogout = () => {
@@ -63,7 +66,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar">
+      <nav className={`navbar ${isDashboard ? 'dashboard-navbar' : ''}`}>
         <div className="navbar-logo">
           <Link to="/">Scriptum Lux</Link>
         </div>
