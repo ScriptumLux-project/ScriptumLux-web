@@ -157,6 +157,7 @@
 .add-to-playlist-btn {
   background-color: #f0c63e; 
   animation: fadeIn 0.3s ease-out;
+  color:#090919;
 }
 
 @keyframes fadeIn {

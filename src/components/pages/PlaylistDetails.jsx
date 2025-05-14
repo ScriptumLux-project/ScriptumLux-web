@@ -11,6 +11,7 @@ import { mockMovies } from '../../mockData/data';
 import { usePlaylists } from '../context/PlaylistContext';
 import EditPlaylistModal from '../modals/EditPlaylistModal'; 
 import DropdownMenu from '../modals/DropdownMenu';
+import PlaylistModal from '../modals/PlaylistModal';
 
 import './PlaylistDetails.css';
 
@@ -24,6 +25,9 @@ const PlaylistDetails = () => {
   //+*
   const [dropdownStates, setDropdownStates] = useState({});
   const [dropdownPosition, setDropdownPosition] = useState(null);
+
+  const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+  const [selectedMovieForPlaylist, setSelectedMovieForPlaylist] = useState(null);
   
   const currentPlaylist = playlists.find(playlist => playlist.id === parseInt(playlistId));
   
@@ -88,7 +92,9 @@ const PlaylistDetails = () => {
   };
   
   const handleAddToAnotherPlaylist = (movieId) => {
-    console.log(`Add movie ${movieId} to another playlist`);
+    const movie = playlistMovies.find(movie => movie.id === movieId);
+    setSelectedMovieForPlaylist(movie);
+    setIsPlaylistModalOpen(true);
   };
   //---------------------------------------------------------------------//*
 
@@ -188,6 +194,17 @@ const PlaylistDetails = () => {
         currentTitle={currentPlaylist.title}
         onSave={handleSaveTitle}
       />
+
+{selectedMovieForPlaylist && (
+        <PlaylistModal
+          isOpen={isPlaylistModalOpen}
+          onClose={() => {
+            setIsPlaylistModalOpen(false);
+            setSelectedMovieForPlaylist(null);
+          }}
+          movieTitle={selectedMovieForPlaylist.title}
+        />
+      )}
     </div>
   );
 };
