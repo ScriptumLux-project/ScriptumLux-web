@@ -6,7 +6,6 @@ import { IoArrowBack } from "react-icons/io5";
 const UsersList = () => {
   const navigate = useNavigate();
   
-  // Mock data for users - in a real app this would come from API
   const [users, setUsers] = useState([
     { id: 1, nickname: 'JohnDoe', email: 'john@example.com', registrationDate: '15-05-2023', comments: 12 },
     { id: 2, nickname: 'JaneSmith', email: 'jane@example.com', registrationDate: '22-07-2023', comments: 8 },
@@ -20,16 +19,15 @@ const UsersList = () => {
   ]);
 
   const handleBanUser = (userId) => {
-    // In a real application, this would call an API to ban the user
-    // For now, we'll just log to console
-    console.log(`Banning user with ID: ${userId}`);
+    const updatedUsers = users.filter(user => user.id !== userId);
     
-    // You could also update the UI to reflect the ban
-    // For example, updating the user's status in the state
+    setUsers(updatedUsers);
+    
+    console.log(`Пользователь с ID: ${userId} удален`);
   };
 
   const handleBackClick = () => {
-    navigate('/dashboard'); // Navigate back to the dashboard
+    navigate('/dashboard'); 
   };
 
   return (
