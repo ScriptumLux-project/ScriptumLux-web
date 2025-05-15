@@ -12,6 +12,8 @@ import { MovieProvider } from './components/context/MovieContext';
 import { PlaylistProvider } from './components/context/PlaylistContext';
 import PlaylistDetails from './components/pages/user/PlaylistDetails';
 
+import UsersList from './components/pages/admin/UsersList';
+
 function App() {
   const isAuthenticated = () => {
     return localStorage.getItem('accessToken') !== null;
@@ -102,6 +104,16 @@ function App() {
                   </>
                 </ProtectedRoute>
               } />
+
+              
+      <Route path="/admin-users-list" element={
+        <ProtectedRoute>
+          <>
+            <Navbar />
+            <UsersList />
+          </>
+        </ProtectedRoute>
+      } />
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

@@ -92,16 +92,6 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.admin-logout-btn {
-  background: none;
-  border: none;
-  color: #090919;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: 'Poppins', sans-serif;
-}
-
 .admin-main-content {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -175,7 +165,7 @@
 }
 
 .admin-action-button:hover {
-  background-color: #e0b630;
+  background-color: #f0c63e;
   transform: scale(1.02);
 }
 
@@ -192,7 +182,7 @@
 }
 
 .admin-quick-action-button:hover {
-  background-color: #e0b630;
+  background-color: #f0c63e;
   transform: scale(1.02);
 }
 

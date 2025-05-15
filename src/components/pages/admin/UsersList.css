@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.admin-users-list-container {
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+background-color: #f7f7f7;
+color: #333;
+padding-top: 64px;
+}
+.admin-users-list-content {
+padding: 40px;
+max-width: 1400px;
+margin: 0 auto;
+width: 100%;
+}
+.admin-users-list-header {
+margin-bottom: 30px;
+}
+.admin-users-list-header h1 {
+font-size: 24px;
+font-weight: 500;
+color: #333;
+font-family: 'Poppins', sans-serif;
+margin-top: 20px;
+}
+.admin-header-underline {
+height: 2px;
+background-color: #f0c63e;
+width: 380px;
+margin-top: 0px;
+margin-bottom: 30px;
+}
+.back-button {
+display: flex;
+align-items: center;
+gap: 5px;
+background: none;
+border: none;
+color: #666;
+font-family: 'Poppins', sans-serif;
+font-size: 16px;
+cursor: pointer;
+padding: 5px;
+transition: color 0.3s ease;
+}
+.back-button:hover {
+color: #f0c63e;
+}
+.users-table-container {
+background-color: #f7f7f7;
+border-radius: 10px;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+padding: 25px;
+overflow-x: auto;
+}
+.users-table {
+width: 100%;
+border-collapse: collapse;
+font-family: 'Poppins', sans-serif;
+}
+.users-table th {
+text-align: left;
+padding: 15px 20px;
+color: #666;
+font-weight: 500;
+border-bottom: 1px solid #eee;
+}
+.users-table td {
+padding: 15px 20px;
+border-bottom: 1px solid #eee;
+color: #333;
+}
+.users-table tbody tr:hover {
+background-color: #f9f9f9;
+}
+
+.ban-button {
+padding: 8px 16px;
+background-color: #f0c63e;
+border: none;
+border-radius: 10px;
+color: #333;
+font-family: 'Poppins', sans-serif;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+.ban-button:hover {
+background-color: #f0c63e;
+transform: scale(1.05);
+}

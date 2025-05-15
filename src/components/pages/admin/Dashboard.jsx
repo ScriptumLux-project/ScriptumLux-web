@@ -16,13 +16,15 @@ const Dashboard = () => {
     // In a real app, you might navigate to different admin pages
     // For now we just update the active tab
   };
-  
-  const handleLogout = () => {
-    // Log out logic - similar to your existing logout function
-    localStorage.removeItem('accessToken');
-    navigate('/');
-  };
 
+  const handleUsersListClick = () => {
+    navigate('/admin-users-list');
+  };
+  
+  const handleMoviesListClick = () => {
+    navigate('/admin-movies-list');
+  };
+  
   return (
     <div className="admin-dashboard-container">
       <div className="admin-dashboard-content">
@@ -47,7 +49,8 @@ const Dashboard = () => {
                 <div className="admin-section-description">Description</div>
               </div>
             </div>
-            <button className="admin-action-button">
+            
+            <button className="admin-action-button" onClick={handleUsersListClick}>
               <span>List of users</span>
               <MdNavigateNext className="next-icon" />
             </button>

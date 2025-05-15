@@ -19,8 +19,10 @@ const Navbar = () => {
   
   const [showDropdown, setShowDropdown] = useState(false);
 
-  //verification for the Dashboard styles**
-  const isDashboard = location.pathname === '/dashboard';
+  const isAdminPage = location.pathname === '/dashboard' || 
+                      location.pathname === '/admin-dashboard' || 
+                      location.pathname.includes('/admin-users-list') ||
+                      location.pathname.includes('/admin-movies-list');
 
   const toggleDropdown = () => setShowDropdown(prev => !prev);
 
@@ -66,7 +68,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`navbar ${isDashboard ? 'dashboard-navbar' : ''}`}>
+      <nav className={`navbar ${isAdminPage ? 'dashboard-navbar' : ''}`}>
         <div className="navbar-logo">
           <Link to="/">Scriptum Lux</Link>
         </div>
