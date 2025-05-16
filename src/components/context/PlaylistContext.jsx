@@ -1,34 +1,77 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { getPlaylists, createPlaylist, deletePlaylist, updatePlaylist, addMovieToPlaylist } from '../../api';
 
-const PlaylistContext = createContext();
+const DEFAULT_POSTER_URL = '/assets/icon_playlist.jpg';
+
+const PlaylistContext = createContext(null);
 
 export const PlaylistProvider = ({ children }) => {
-  const [playlists, setPlaylists] = useState([
-    { id: 1, title: 'Sci-Fi Collection', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 2, title: 'Oscar Winners', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 3, title: 'Horror Classics', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 4, title: 'Documentaries', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 5, title: 'Animation Movies', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 6, title: 'Comedy Favorites', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 7, title: 'Action Movies', posterUrl: '/assets/icon_playlist.jpg' },
-    { id: 8, title: 'Drama Collection', posterUrl: '/assets/icon_playlist.jpg' }
-  ]);
+  const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const addPlaylist = (newPlaylist) => {
-    setPlaylists([...playlists, newPlaylist]);
+  const addDefaultPoster = (playlistData) => {
+    if (Array.isArray(playlistData)) {
+      return playlistData.map(playlist => ({
+        ...playlist,
+        posterUrl: playlist.posterUrl || DEFAULT_POSTER_URL
+      }));
+    }
+    return {
+      ...playlistData,
+      posterUrl: playlistData.posterUrl || DEFAULT_POSTER_URL
+    };
+  };
+
+  useEffect(() => {
+    getPlaylists()
+      .then(data => {
+        const playlistsWithPosters = addDefaultPoster(data);
+        setPlaylists(playlistsWithPosters);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const addNewPlaylist = async (title, firstMovieId = null) => {
+    const pl = await createPlaylist(title, firstMovieId);
+    const playlistWithPoster = addDefaultPoster(pl);
+    setPlaylists(prev => [...prev, playlistWithPoster]);
+    return playlistWithPoster;
+  };
+
+  const removePlaylist = async (id) => {
+    await deletePlaylist(id);
+    setPlaylists(prev => prev.filter(p => p.id !== id));
+  };
+
+  const renamePlaylist = async (id, newTitle) => {
+    const pl = await updatePlaylist(id, { title: newTitle });
+    const playlistWithPoster = addDefaultPoster(pl);
+    setPlaylists(prev => prev.map(p => p.id === id ? playlistWithPoster : p));
+    return playlistWithPoster;
+  };
+
+  const addToPlaylist = async (playlistId, movieId) => {
+    const pl = await addMovieToPlaylist(playlistId, movieId);
+    const playlistWithPoster = addDefaultPoster(pl);
+    setPlaylists(prev => prev.map(p => {
+      if (p.id === playlistId) {
+        return playlistWithPoster;
+      }
+      return p;
+    }));
+    return playlistWithPoster;
   };
 
   return (
-    <PlaylistContext.Provider value={{ playlists, setPlaylists, addPlaylist }}>
+    <PlaylistContext.Provider value={{
+      playlists, loading,
+      addNewPlaylist, removePlaylist,
+      renamePlaylist, addToPlaylist
+    }}>
       {children}
     </PlaylistContext.Provider>
   );
 };
 
-export const usePlaylists = () => {
-  const context = useContext(PlaylistContext);
-  if (!context) {
-    throw new Error('usePlaylists must be used within a PlaylistProvider');
-  }
-  return context;
-};
+export const usePlaylists = () => useContext(PlaylistContext);
