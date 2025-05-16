@@ -3,10 +3,12 @@ import './Dashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { MdNavigateNext } from "react-icons/md";
 import { FaUserLarge } from "react-icons/fa6";
+import AddMovieModal from '../../modals/AddMovieModal'; 
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Dashboard');
+  const [isAddMovieModalOpen, setIsAddMovieModalOpen] = useState(false);
   
   // Admin name - in real app would come from context/authentication
   const adminName = "Admin";
@@ -25,6 +27,13 @@ const Dashboard = () => {
     navigate('/admin-movies-list');
   };
 
+  const handleAddMovieClick = () => {
+    setIsAddMovieModalOpen(true);
+  };
+  
+  const closeAddMovieModal = () => {
+    setIsAddMovieModalOpen(false);
+  };
   
   return (
     <div className="admin-dashboard-container">
@@ -35,7 +44,7 @@ const Dashboard = () => {
               <h1>Dashboard</h1>
               <div className="admin-header-underline"></div>
             </div>
-            <button className="admin-quick-action-button">Add Movie +</button>
+            <button className="admin-quick-action-button" onClick={handleAddMovieClick}>Add Movie +</button>
           </div>
         </div>
         
@@ -74,6 +83,11 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      
+      <AddMovieModal
+        isOpen={isAddMovieModalOpen} 
+        onClose={closeAddMovieModal}
+      />
     </div>
   );
 };

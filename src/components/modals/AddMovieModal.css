@@ -1,0 +1,264 @@
+.form-group textarea::placeholder {
+  color: #999;
+}.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.add-movie-modal {
+  background-color: #f7f7f7;
+  width: 600px;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.modal-header h1 {
+  font-size: 18px;
+  margin: 0;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.upload-poster-area {
+  width: 80%;
+  height: 120px;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.upload-file-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.upload-file-section p {
+  margin: 0 0 5px 0;
+  font-weight: 500;
+}
+
+.upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f0c63e;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.upload-button:hover {
+  transform: scale(1.05);
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  color: #666;
+}
+
+.form-group textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.half {
+  width: 48%;
+}
+
+.half input {
+  width: 100%;
+}
+
+.form-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-movie-btn {
+  background-color: #b6b6b6;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.add-movie-btn:hover {
+  background-color: #f0c63e;
+  transform: scale(1.05);
+}
+
+.cast-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.add-cast-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.add-cast-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 20px;
+  background-color: #f0c63e;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.add-cast-btn:hover {
+  transform: scale(1.05);
+  background-color: #f8d468;
+}
+
+.cast-member {
+  position: relative;
+  padding: 15px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.remove-cast-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-cast-btn:hover {
+  color: #333;
+}
+
+@media (max-width: 1024px) {
+  .add-movie-modal {
+    width: 90%;
+    height: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .half {
+    width: 100%;
+  }
+}
