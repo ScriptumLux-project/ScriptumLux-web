@@ -23,7 +23,6 @@ const UsersList = () => {
     
     setUsers(updatedUsers);
     
-    console.log(`Пользователь с ID: ${userId} удален`);
   };
 
   const handleBackClick = () => {

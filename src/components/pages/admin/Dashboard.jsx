@@ -66,7 +66,7 @@ const Dashboard = () => {
                 <div className="admin-section-description">Description</div>
               </div>
             </div>
-            <button className="admin-action-button">
+            <button className="admin-action-button" onClick={handleMoviesListClick}>
               <span>List of movies</span>
               <MdNavigateNext className="next-icon" />
             </button>

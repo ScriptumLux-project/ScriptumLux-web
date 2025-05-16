@@ -13,6 +13,7 @@ import { PlaylistProvider } from './components/context/PlaylistContext';
 import PlaylistDetails from './components/pages/user/PlaylistDetails';
 
 import UsersList from './components/pages/admin/UsersList';
+import MovieList from './components/pages/admin/MovieList';
 
 function App() {
   const isAuthenticated = () => {
@@ -105,15 +106,23 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              
-      <Route path="/admin-users-list" element={
-        <ProtectedRoute>
-          <>
-            <Navbar />
-            <UsersList />
-          </>
-        </ProtectedRoute>
-      } />
+              <Route path="/admin-users-list" element={
+                <ProtectedRoute>
+                 <>
+                  <Navbar />
+                  <UsersList />
+                 </>
+               </ProtectedRoute>
+             } />
+
+              <Route path="/admin-movies-list" element={
+                <ProtectedRoute>
+                 <>
+                   <Navbar />
+                   <MovieList />
+                 </>
+               </ProtectedRoute>
+             } />
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
