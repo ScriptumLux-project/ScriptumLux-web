@@ -162,41 +162,38 @@ const AddMovieModal = ({ isOpen, onClose }) => {
             </div>
 
             <div className="form-fields">
-              <div className="form-group">
+              <div className="form-group-add">
                 <label>Title</label>
                 <input 
                   type="text" 
                   name="title" 
                   value={movieData.title} 
                   onChange={handleInputChange} 
-                  className="long-input"
                 />
               </div>
               
-              <div className="form-group">
+              <div className="form-group-add">
                 <label>Release Year</label>
                 <input 
                   type="text" 
                   name="releaseYear" 
                   value={movieData.releaseYear} 
                   onChange={handleInputChange} 
-                  className="long-input"
                 />
               </div>
               
-              <div className="form-group">
+              <div className="form-group-add">
                 <label>Genre</label>
                 <input 
                   type="text" 
                   name="genre" 
                   value={movieData.genre} 
                   onChange={handleInputChange} 
-                  className="long-input"
                 />
               </div>
               
               <div className="form-row">
-                <div className="form-group half">
+                <div className="form-group-add half">
                   <label>Country</label>
                   <input 
                     type="text" 
@@ -206,7 +203,7 @@ const AddMovieModal = ({ isOpen, onClose }) => {
                   />
                 </div>
                 
-                <div className="form-group half">
+                <div className="form-group-add half">
                   <label>Language</label>
                   <input 
                     type="text" 
@@ -217,23 +214,21 @@ const AddMovieModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
               
-              <div className="form-group">
+              <div className="form-group-add">
                 <label>Description</label>
                 <textarea 
                   name="description" 
                   value={movieData.description} 
                   onChange={handleInputChange}
                   placeholder="Lorem ipsum dolor sit amet consectetur. Vitae imperdiet pretium pellentesque facilisi ac augue. Feugiat adipiscing commodo mi erat quis porta. Elementum in arcu tempor id ultrices turpis nullam. Quisque purus interdum etiam..."
-                  className="long-input"
                 ></textarea>
               </div>
               
               <div className="cast-section">
-      
                 {movieData.cast.map((castMember, index) => (
                   <div key={index} className="cast-member">
                     <div className="form-row">
-                      <div className="form-group half">
+                      <div className="form-group-add half">
                         <label>Actor name</label>
                         <input 
                           type="text" 
@@ -243,7 +238,7 @@ const AddMovieModal = ({ isOpen, onClose }) => {
                         />
                       </div>
                       
-                      <div className="form-group half">
+                      <div className="form-group-add half">
                         <label>Role</label>
                         <input 
                           type="text" 
