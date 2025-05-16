@@ -147,10 +147,9 @@
   /*other*/
   .error-message {
     color: #e53935;
-    margin-bottom: 20px;
+    margin-bottom: -100px;
     font-family: 'Poppins', sans-serif;
     padding: 10px;
-    background-color: rgba(229, 57, 53, 0.1);
     border-radius: 4px;
   }
   

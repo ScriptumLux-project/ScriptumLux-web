@@ -30,10 +30,9 @@ const Login = ({ isOpen, onClose, switchToSignUp }) => {
         <div className="login-content-wrapper">
           <div className="modal-header">
             <h2>Log In</h2>
+            {error && <div className="error-message">{error}</div>}
           </div>
 
-          {error && <div className="error-message">{error}</div>}
-          
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
               <input

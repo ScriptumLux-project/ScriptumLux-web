@@ -231,15 +231,14 @@
 }
 
 .dashboard-navbar .navbar-dropdown-item {
-    color: #333;
+    color: #f0c63e;
 }
   
 .navbar-dropdown-item:hover {
-    background-color: #222;
+
     color: #f0c63e;
 }
 
 .dashboard-navbar .navbar-dropdown-item:hover {
-  background-color: rgba(240, 198, 62, 0.1);
-  color: #f0c63e;
+  color: #333;
 }
