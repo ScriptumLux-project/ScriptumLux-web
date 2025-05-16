@@ -159,106 +159,185 @@ export const mockMovieDetails = {
 };
 
 //----------------------------------------------------------------------------------------//
-export const mockComments = {
-  1: [
-    {
+export const mockComments = [
+  {
       id: 1,
-      user: "DreamExplorer",
-      date: "2023-11-15",
-      content: "Mind-bending concept and incredible visuals. The way Nolan plays with time and reality is masterful. DiCaprio's performance is one of his best.",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg"
-    },
-    {
+      userId: 1, // JohnDoe
+      userName: "JohnDoe",
+      movieId: 1,
+      movieTitle: "Inception",
+      text: "Mind-bending concept and incredible visuals. The way Nolan plays with time and reality is masterful.",
+      date: "15-11-2023"
+  },
+  {
       id: 2,
-      user: "CinematicVisionary",
-      date: "2023-10-22",
-      content: "This movie rewards multiple viewings. Each time I watch it, I notice something new in the intricate plot structure.",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-    },
-    {
+      userId: 2, // JaneSmith
+      userName: "JaneSmith",
+      movieId: 1,
+      movieTitle: "Inception",
+      text: "This movie rewards multiple viewings. Each time I watch it, I notice something new in the intricate plot structure.",
+      date: "22-10-2023"
+  },
+  {
       id: 3,
-      user: "FilmBuffJane",
-      date: "2023-09-30",
-      content: "Hans Zimmer's score elevates every scene. That 'BWAAAH' sound is iconic now.",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg"
-    }
-  ],
-  2: [
-    {
-      id: 1,
-      user: "PrisonDramaFan",
-      date: "2023-12-05",
-      content: "A perfect story about hope and resilience. Morgan Freeman's narration adds so much depth to the film.",
-      avatar: "https://randomuser.me/api/portraits/men/41.jpg"
-    },
-    {
-      id: 2,
-      user: "ClassicMovieLover",
-      date: "2023-11-18",
-      content: "This movie deserves its spot at the top of many 'best films' lists. The character development is flawless.",
-      avatar: "https://randomuser.me/api/portraits/women/33.jpg"
-    }
-  ],
-  3: [
-    {
-      id: 1,
-      user: "BatmanEnthusiast",
-      date: "2023-12-10",
-      content: "Heath Ledger's Joker is the greatest villain performance in cinema history. Period.",
-      avatar: "https://randomuser.me/api/portraits/men/22.jpg"
-    },
-    {
-      id: 2,
-      user: "ComicBookCritic",
-      date: "2023-11-25",
-      content: "This transcends the superhero genre and stands as one of the best crime dramas ever made.",
-      avatar: "https://randomuser.me/api/portraits/men/56.jpg"
-    },
-    {
-      id: 3,
-      user: "FilmStudentX",
-      date: "2023-10-14",
-      content: "The practical effects and IMAX filming techniques give this film a weight that CGI-heavy superhero movies lack.",
-      avatar: "https://randomuser.me/api/portraits/women/17.jpg"
-    }
-  ],
-  4: [
-    {
-      id: 1,
-      user: "TarantinoFan90",
-      date: "2023-12-08",
-      content: "The non-linear storytelling was revolutionary at the time and still feels fresh today.",
-      avatar: "https://randomuser.me/api/portraits/men/78.jpg"
-    },
-    {
-      id: 2,
-      user: "DialogueExpert",
-      date: "2023-11-20",
-      content: "Some of the most quotable lines in cinema history. Tarantino's dialogue is unmatched.",
-      avatar: "https://randomuser.me/api/portraits/women/26.jpg"
-    }
-  ],
-  5: [
-    {
-      id: 1,
-      user: "PhilosophicalViewer",
-      date: "2023-12-12",
-      content: "A scathing critique of consumerism wrapped in an entertaining package. Fincher's direction is impeccable.",
-      avatar: "https://randomuser.me/api/portraits/men/91.jpg"
-    },
-    {
-      id: 2,
-      user: "CinematicRebel",
-      date: "2023-11-05",
-      content: "The twist still works even when you know it's coming. That's good filmmaking.",
-      avatar: "https://randomuser.me/api/portraits/women/63.jpg"
-    },
-    {
-      id: 3,
-      user: "FilmTechnician",
-      date: "2023-10-22",
-      content: "The gritty visual style perfectly matches the story's tone. Every technical aspect serves the narrative.",
-      avatar: "https://randomuser.me/api/portraits/men/36.jpg"
-    }
-  ]
-};
+      userId: 1, // JohnDoe
+      userName: "JohnDoe",
+      movieId: 2,
+      movieTitle: "The Shawshank Redemption",
+      text: "A perfect story about hope and resilience. The narration adds so much depth to the film.",
+      date: "05-12-2023"
+  },
+  {
+      id: 4,
+      userId: 3, // MikeJohnson
+      userName: "MikeJohnson",
+      movieId: 3,
+      movieTitle: "The Dark Knight",
+      text: "Heath Ledger's Joker is the greatest villain performance in cinema history. Period.",
+      date: "10-12-2023"
+  },
+  {
+      id: 5,
+      userId: 4, // SarahWilliams
+      userName: "SarahWilliams",
+      movieId: 3,
+      movieTitle: "The Dark Knight",
+      text: "This transcends the superhero genre and stands as one of the best crime dramas ever made.",
+      date: "25-11-2023"
+  },
+  {
+      id: 6,
+      userId: 5, // DavidBrown
+      userName: "DavidBrown",
+      movieId: 4,
+      movieTitle: "Pulp Fiction",
+      text: "The non-linear storytelling was revolutionary at the time and still feels fresh today.",
+      date: "08-12-2023"
+  },
+  {
+      id: 7,
+      userId: 6, // EmmaJones
+      userName: "EmmaJones",
+      movieId: 4,
+      movieTitle: "Pulp Fiction",
+      text: "Some of the most quotable lines in cinema history. Tarantino's dialogue is unmatched.",
+      date: "20-11-2023"
+  },
+  {
+      id: 8,
+      userId: 7, // RobertDavis
+      userName: "RobertDavis",
+      movieId: 5,
+      movieTitle: "Fight Club",
+      text: "A scathing critique of consumerism wrapped in an entertaining package. Fincher's direction is impeccable.",
+      date: "12-12-2023"
+  },
+  {
+      id: 9,
+      userId: 8, // OliviaMiller
+      userName: "OliviaMiller",
+      movieId: 5,
+      movieTitle: "Fight Club",
+      text: "The twist still works even when you know it's coming. That's good filmmaking.",
+      date: "05-11-2023"
+  },
+  {
+      id: 10,
+      userId: 3, // MikeJohnson
+      userName: "MikeJohnson",
+      movieId: 6,
+      movieTitle: "The Matrix",
+      text: "Revolutionary visual effects that still hold up today. A sci-fi masterpiece.",
+      date: "15-01-2024"
+  },
+  {
+      id: 11,
+      userId: 3, // MikeJohnson
+      userName: "MikeJohnson",
+      movieId: 7,
+      movieTitle: "Interstellar",
+      text: "Emotional and scientifically fascinating. The black hole visuals were groundbreaking.",
+      date: "22-02-2024"
+  },
+  {
+      id: 12,
+      userId: 1, // JohnDoe
+      userName: "JohnDoe",
+      movieId: 8,
+      movieTitle: "The Godfather",
+      text: "The definitive gangster movie. Brando and Pacino deliver iconic performances.",
+      date: "10-03-2024"
+  },
+  {
+      id: 13,
+      userId: 9, // WilliamGarcia
+      userName: "WilliamGarcia",
+      movieId: 8,
+      movieTitle: "The Godfather",
+      text: "Perfect pacing and storytelling. Every scene has purpose and impact.",
+      date: "17-03-2024"
+  },
+  {
+      id: 14,
+      userId: 3, // MikeJohnson
+      userName: "MikeJohnson",
+      movieId: 9,
+      movieTitle: "Forrest Gump",
+      text: "Tom Hanks deserved his Oscar. A journey through American history with heart.",
+      date: "05-04-2024"
+  },
+  {
+      id: 15,
+      userId: 8, // OliviaMiller
+      userName: "OliviaMiller",
+      movieId: 9,
+      movieTitle: "Forrest Gump",
+      text: "The integration of Forrest into historical footage was groundbreaking for its time.",
+      date: "12-04-2024"
+  },
+  {
+      id: 16,
+      userId: 5, // DavidBrown
+      userName: "DavidBrown",
+      movieId: 7,
+      movieTitle: "Interstellar",
+      text: "The score by Hans Zimmer perfectly complements the epic scale of the visuals.",
+      date: "25-04-2024"
+  },
+  {
+      id: 17,
+      userId: 7, // RobertDavis
+      userName: "RobertDavis",
+      movieId: 6,
+      movieTitle: "The Matrix",
+      text: "Redefined action cinema and inspired countless imitators. A true classic.",
+      date: "14-05-2024"
+  },
+  {
+      id: 18,
+      userId: 8, // OliviaMiller
+      userName: "OliviaMiller",
+      movieId: 2,
+      movieTitle: "The Shawshank Redemption",
+      text: "This movie deserves its spot at the top of many 'best films' lists. The character development is flawless.",
+      date: "18-05-2024"
+  },
+  {
+      id: 19,
+      userId: 2, // JaneSmith
+      userName: "JaneSmith",
+      movieId: 3,
+      movieTitle: "The Dark Knight",
+      text: "The practical effects and IMAX filming techniques give this film a weight that CGI-heavy superhero movies lack.",
+      date: "01-06-2024"
+  },
+  {
+      id: 20,
+      userId: 9, // WilliamGarcia
+      userName: "WilliamGarcia",
+      movieId: 5,
+      movieTitle: "Fight Club",
+      text: "The gritty visual style perfectly matches the story's tone. Every technical aspect serves the narrative.",
+      date: "15-06-2024"
+  }
+];

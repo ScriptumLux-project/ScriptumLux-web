@@ -14,6 +14,7 @@ import PlaylistDetails from './components/pages/user/PlaylistDetails';
 
 import UsersList from './components/pages/admin/UsersList';
 import MovieList from './components/pages/admin/MovieList';
+import CommentsList from './components/pages/admin/CommentsList';
 
 function App() {
   const isAuthenticated = () => {
@@ -120,6 +121,15 @@ function App() {
                  <>
                    <Navbar />
                    <MovieList />
+                 </>
+               </ProtectedRoute>
+             } />
+
+             <Route path="/admin-comments-list/:userId" element={
+                <ProtectedRoute>
+                 <>
+                   <Navbar />
+                   <CommentsList />
                  </>
                </ProtectedRoute>
              } />

@@ -24,6 +24,7 @@ const Dashboard = () => {
   const handleMoviesListClick = () => {
     navigate('/admin-movies-list');
   };
+
   
   return (
     <div className="admin-dashboard-container">

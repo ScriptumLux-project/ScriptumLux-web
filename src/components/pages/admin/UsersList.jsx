@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UsersList.css';
 import { IoArrowBack } from "react-icons/io5";
+import { MdReadMore } from "react-icons/md";
 
 const UsersList = () => {
   const navigate = useNavigate();
@@ -29,6 +30,11 @@ const UsersList = () => {
     navigate('/dashboard'); 
   };
 
+  const handleCommentsListClick = (userId) => {
+    navigate(`/admin-comments-list/${userId}`);
+  };
+  
+
   return (
     <div className="admin-users-list-container">
       <div className="admin-users-list-content">
@@ -37,7 +43,7 @@ const UsersList = () => {
             <IoArrowBack /> Back
           </button>
           <div>
-            <h1>List of users</h1>
+            <h1>List of Users</h1>
             <div className="admin-header-underline"></div>
           </div>
         </div>
@@ -59,7 +65,11 @@ const UsersList = () => {
                   <td>{user.nickname}</td>
                   <td>{user.email}</td>
                   <td>{user.registrationDate}</td>
-                  <td>{user.comments}</td>
+                  <td>{user.comments}
+                  <button className="comment-icon" onClick={() => handleCommentsListClick(user.id)}>
+  <MdReadMore />
+</button>
+                  </td>
                   <td>
                     <button 
                       className="ban-button"

@@ -22,7 +22,8 @@ const Navbar = () => {
   const isAdminPage = location.pathname === '/dashboard' || 
                       location.pathname === '/admin-dashboard' || 
                       location.pathname.includes('/admin-users-list') ||
-                      location.pathname.includes('/admin-movies-list');
+                      location.pathname.includes('/admin-movies-list') ||
+                      location.pathname.includes('/admin-comments-list');
 
   const toggleDropdown = () => setShowDropdown(prev => !prev);
 
