@@ -1,39 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UsersList.css';
 import { IoArrowBack } from "react-icons/io5";
 import { MdReadMore } from "react-icons/md";
+import { getAllUsers, deleteUser } from '../../../api';
 
 const UsersList = () => {
   const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userData = await getAllUsers();
   
-  const [users, setUsers] = useState([
-    { id: 1, nickname: 'JohnDoe', email: 'john@example.com', registrationDate: '15-05-2023', comments: 12 },
-    { id: 2, nickname: 'JaneSmith', email: 'jane@example.com', registrationDate: '22-07-2023', comments: 8 },
-    { id: 3, nickname: 'MikeJohnson', email: 'mike@example.com', registrationDate: '05-01-2024', comments: 23 },
-    { id: 4, nickname: 'SarahWilliams', email: 'sarah@example.com', registrationDate: '10-03-2024', comments: 5 },
-    { id: 5, nickname: 'DavidBrown', email: 'david@example.com', registrationDate: '14-04-2024', comments: 17 },
-    { id: 6, nickname: 'EmmaJones', email: 'emma@example.com', registrationDate: '28-06-2024', comments: 3 },
-    { id: 7, nickname: 'RobertDavis', email: 'robert@example.com', registrationDate: '19-08-2024', comments: 9 },
-    { id: 8, nickname: 'OliviaMiller', email: 'olivia@example.com', registrationDate: '07-09-2024', comments: 11 },
-    { id: 9, nickname: 'WilliamGarcia', email: 'william@example.com', registrationDate: '30-09-2024', comments: 14 },
-  ]);
-
-  const handleBanUser = (userId) => {
-    const updatedUsers = users.filter(user => user.id !== userId);
-    
-    setUsers(updatedUsers);
-    
-  };
-
-  const handleBackClick = () => {
-    navigate('/dashboard'); 
-  };
-
-  const handleCommentsListClick = (userId) => {
-    navigate(`/admin-comments-list/${userId}`);
-  };
+        const formattedUsers = userData.map(user => {
+          const normalizedId = user.id ?? user._id ?? user.userId;
   
+          return {
+            id: normalizedId,
+            nickname: user.name || 'Unnamed',
+            email: user.email || 'No email',
+            registrationDate: new Date(user.createdAt || Date.now()).toLocaleDateString('en-GB'),
+            comments: Array.isArray(user.comments) ? user.comments.length : 0,
+          };
+        });
+  
+        setUsers(formattedUsers);
+      } catch (err) {
+        console.error('Error loading users:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchUsers();
+  }, []);
+  
+
+  const handleBanUser = async (userId) => {
+    if (!userId) {
+      console.error('Invalid user ID:', userId);
+      return;
+    }
+  
+    try {
+      console.log('Deleting user with ID:', userId);
+      await deleteUser(userId);
+  
+      const updatedUsers = users.filter(user => user.id !== userId);
+      setUsers(updatedUsers);
+    } catch (error) {
+      const status = error.response?.status;
+      const message = error.response?.data || error.message;
+      console.error(`Error deleting user (status ${status}):`, message);
+      alert(`Failed to delete user. Server responded with status ${status}`);
+    }
+  };  
+
+  const handleBackClick = () => navigate('/dashboard');
+  const handleCommentsListClick = (userId) => navigate(`/admin-comments-list/${userId}`);
+
+  if (loading) return <p>Loading users...</p>;
 
   return (
     <div className="admin-users-list-container">
@@ -65,21 +94,23 @@ const UsersList = () => {
                   <td>{user.nickname}</td>
                   <td>{user.email}</td>
                   <td>{user.registrationDate}</td>
-                  <td>{user.comments}
-                  <button className="comment-icon" onClick={() => handleCommentsListClick(user.id)}>
-  <MdReadMore />
-</button>
+                  <td>
+                    <button className="comment-icon" onClick={() => handleCommentsListClick(user.id)}>
+                      <MdReadMore />
+                    </button>
                   </td>
                   <td>
-                    <button 
-                      className="ban-button"
-                      onClick={() => handleBanUser(user.id)}
-                    >
+                    <button className="ban-button" onClick={() => handleBanUser(user.id)}>
                       Ban
                     </button>
                   </td>
                 </tr>
               ))}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: 'center' }}>No users found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

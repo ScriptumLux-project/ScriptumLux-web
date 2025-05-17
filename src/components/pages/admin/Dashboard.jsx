@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { MdNavigateNext } from "react-icons/md";
-import { FaUserLarge } from "react-icons/fa6";
+import { FaUserLarge, FaFilm } from "react-icons/fa6";
 import AddMovieModal from '../../modals/AddMovieModal'; 
+import { useMovies } from '../../context/MovieContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isAddMovieModalOpen, setIsAddMovieModalOpen] = useState(false);
+  const { refreshMovies } = useMovies();
   
   // Admin name - in real app would come from context/authentication
   const adminName = "Admin";
@@ -35,6 +37,11 @@ const Dashboard = () => {
     setIsAddMovieModalOpen(false);
   };
   
+  const handleMovieAdded = (newMovie) => {
+    // Refresh the movies context to include the newly added movie
+    refreshMovies();
+  };
+  
   return (
     <div className="admin-dashboard-container">
       <div className="admin-dashboard-content">
@@ -55,8 +62,8 @@ const Dashboard = () => {
                 <i className="user-icon"> <FaUserLarge /></i>
               </div>
               <div className="admin-section-info">
-                <div className="admin-section-title">Text</div>
-                <div className="admin-section-description">Description</div>
+                <div className="admin-section-title">Users</div>
+                <div className="admin-section-description">Manage user accounts</div>
               </div>
             </div>
             
@@ -69,11 +76,11 @@ const Dashboard = () => {
           <div className="admin-content-section">
             <div className="admin-section-header">
               <div className="admin-user-icon">
-                <i className="user-icon"><FaUserLarge /></i>
+                <i className="user-icon"><FaFilm /></i>
               </div>
               <div className="admin-section-info">
-                <div className="admin-section-title">Text</div>
-                <div className="admin-section-description">Description</div>
+                <div className="admin-section-title">Movies</div>
+                <div className="admin-section-description">Manage movie content</div>
               </div>
             </div>
             <button className="admin-action-button" onClick={handleMoviesListClick}>
@@ -87,6 +94,7 @@ const Dashboard = () => {
       <AddMovieModal
         isOpen={isAddMovieModalOpen} 
         onClose={closeAddMovieModal}
+        onMovieAdded={handleMovieAdded}
       />
     </div>
   );

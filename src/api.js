@@ -111,6 +111,7 @@ export async function deletePlaylist(id) {
     return res.data;
 }
 
+//moviesList*
 export async function addMovieToPlaylist(playlistId, movieId) {
     const res = await api.post(`/playlists/${playlistId}/movies`, { movieId });
     return res.data;
@@ -120,3 +121,17 @@ export async function deleteMovie(id) {
     const res = await api.delete(`/Movies/${id}`);
     return res.data;
 }
+
+//usersList*
+export async function getAllUsers() {
+    const res = await api.get('/Users'); 
+    return res.data;
+  }
+  
+  export async function deleteUser(id) {
+    const res = await api.delete(`/Users/${id}`);
+    return res.data;
+  }
+
+  
+  
