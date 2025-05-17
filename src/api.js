@@ -70,18 +70,17 @@ export async function getMovieDetails(id) {
     }
 }
 
-// Comments
-export async function getComments(movieId) {
-    try {
-        const res = await api.get(`/Comments/movie/${movieId}`);
-        return res.data;
-    } catch (error) {
-        console.error(`Error fetching comments for movie ${movieId}:`, error.response?.data || error.message);
-        // Return empty array instead of throwing to prevent component crash
-        return [];
-    }
-}
-
+//commentsList*
+export async function getComments(userId) {
+    const res = await api.get(`/Comments/user/${userId}`);
+    return res.data;
+  }
+  
+  export async function deleteComment(id) {
+    const res = await api.delete(`/Comments/${id}`);
+    return res.data;
+  }
+  
 export async function postComment(movieId, comment) {
     const res = await api.post(`/Comments`, { 
         movieId: parseInt(movieId), 
