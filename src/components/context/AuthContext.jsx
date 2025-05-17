@@ -5,30 +5,60 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading,     setLoading]     = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser && storedUser !== 'undefined') {
+        setCurrentUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Error parsing user from localStorage:", error);
+  
+      localStorage.removeItem('user');
+      localStorage.removeItem('accessToken');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
-    const { user, token } = await apiLogin(email, password);
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setCurrentUser(user);
-    return user;
+    try {
+      const response = await apiLogin(email, password);
+      if (response && response.user && response.token) {
+        localStorage.setItem('accessToken', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        setCurrentUser(response.user);
+        return response.user;
+      } else {
+        throw new Error("Invalid response from server");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
   };
 
-  const signup = async (email, password, nickname) => {
-    const { user, token } = await apiSignup(email, password, nickname);
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setCurrentUser(user);
-    return user;
+  const signup = async (email, password, nickname, confirmPassword, role = "string") => {
+    try {
+      //role - string by default*
+      const roleToUse = role || "string";
+      
+      const response = await apiSignup(email, password, nickname, confirmPassword, roleToUse);
+      
+      if (response && response.user && response.token) {
+        localStorage.setItem('accessToken', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user)); 
+        setCurrentUser(response.user);
+        return response.user;
+      } else {
+        throw new Error("Invalid response format from server");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -37,7 +67,10 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
-  const isAuthenticated = () => !!localStorage.getItem('accessToken');
+  const isAuthenticated = () => {
+    const token = localStorage.getItem('accessToken');
+    return !!token && token !== 'undefined';
+  };
 
   return (
       <AuthContext.Provider value={{

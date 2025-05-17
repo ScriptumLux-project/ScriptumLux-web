@@ -12,10 +12,15 @@ const CommentsList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+   
+    window.scrollTo(0, 0);
+
     const fetchComments = async () => {
       try {
         const data = await getComments(userId);
-        setComments(data);
+
+        const commentArray = Array.isArray(data) ? data : (data.comments || []);
+        setComments(commentArray);
       } catch (error) {
         console.error('Error fetching comments:', error);
       } finally {
@@ -29,7 +34,7 @@ const CommentsList = () => {
   const handleDeleteComment = async (commentId) => {
     try {
       await deleteComment(commentId);
-      setComments(prev => prev.filter(comment => comment.id !== commentId));
+      setComments(prev => prev.filter(comment => comment.commentId !== commentId));
     } catch (error) {
       console.error('Failed to delete comment:', error);
       alert('Failed to delete comment');
@@ -58,18 +63,18 @@ const CommentsList = () => {
             <p>No comments found for this user.</p>
           ) : (
             comments.map(comment => (
-              <div className="comment-card" key={comment.id}>
+              <div className="comment-card" key={comment.commentId}>
                 <div className="comment-header">
                   <div className="comment-info">
                     <div className="comment-values">
-                      <span className="value">{comment.userName || `User ID: ${comment.userId}`}</span>
-                      <span className="value">{new Date(comment.date).toLocaleDateString()}</span>
-                      <span className="value">{comment.movieTitle || `Movie ID: ${comment.movieId}`}</span>
+                      <span className="value">{`User ID: ${comment.userId}`}</span>
+                      <span className="value">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                      <span className="value">{`Movie ID: ${comment.movieId}`}</span>
                     </div>
                   </div>
                   <button
                     className="delete-comment-button"
-                    onClick={() => handleDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.commentId)}
                   >
                     <FaRegTrashAlt />
                   </button>

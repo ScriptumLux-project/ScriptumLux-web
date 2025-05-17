@@ -10,10 +10,13 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
+    if (token && token !== 'undefined') {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
+}, error => {
+    console.error("API Request Error:", error);
+    return Promise.reject(error);
 });
 
 api.interceptors.response.use(
@@ -30,14 +33,42 @@ api.interceptors.response.use(
 
 // Auth
 export async function login(email, password) {
-    const res = await api.post('/Users/login', { email, password });
-    return res.data;
+    try {
+        const res = await api.post('/Users/login', { email, password });
+        return res.data;
+    } catch (error) {
+        console.error('Login error:', error.response?.data || error.message);
+        throw error;
+    }
 }
 
-export async function signup(email, password, nickname) {
-    const res = await api.post('/Users/register', { email, password, nickname });
-    return res.data;
+export async function signup(email, password, nickname, confirmPassword, role) {
+    try {
+        console.log("Sending registration data:", { 
+            name: nickname, 
+            email, 
+            password, 
+            confirmPassword, 
+            role 
+        });
+        
+        const res = await api.post('/Users/register', { 
+            name: nickname, 
+            email, 
+            password, 
+            confirmPassword, 
+            role 
+        });
+        
+        console.log("Registration response:", res.data);
+        return res.data;
+    } catch (error) {
+        console.error('Signup error:', error);
+        console.error('Error details:', error.response?.data);
+        throw error;
+    }
 }
+
 
 // Movies
 export async function getMovies() {
@@ -69,6 +100,7 @@ export async function getMovieDetails(id) {
         throw error;
     }
 }
+
 
 //commentsList*
 export async function getComments(userId) {
@@ -131,6 +163,3 @@ export async function getAllUsers() {
     const res = await api.delete(`/Users/${id}`);
     return res.data;
   }
-
-  
-  
