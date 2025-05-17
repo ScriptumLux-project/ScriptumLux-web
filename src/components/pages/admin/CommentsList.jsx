@@ -6,18 +6,18 @@ import { getComments, deleteComment } from '../../../api';
 import './UsersList.css';
 
 const CommentsList = () => {
-  const { userId } = useParams();
+  const { userId } = useParams(); 
+  const numericUserId = Number(userId); 
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-   
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); 
 
     const fetchComments = async () => {
       try {
-        const data = await getComments(userId);
+        const data = await getComments(numericUserId);
 
         const commentArray = Array.isArray(data) ? data : (data.comments || []);
         setComments(commentArray);
@@ -29,7 +29,7 @@ const CommentsList = () => {
     };
 
     fetchComments();
-  }, [userId]);
+  }, [numericUserId]);
 
   const handleDeleteComment = async (commentId) => {
     try {
