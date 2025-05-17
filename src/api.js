@@ -42,21 +42,21 @@ export async function login(email, password) {
   }
 }
 
-export async function signup(email, password, nickname, confirmPassword, role) {
-  try {
-    const res = await api.post('/Users/register', {
-      name: nickname,
-      email,
-      password,
-      confirmPassword,
-      role
-    });
-    return res.data;
-  } catch (error) {
-    console.error('Signup error:', error.response?.data);
-    throw error;
+export async function signup(email, password, nickname, confirmPassword, role = "string") {
+    try {
+      const res = await api.post('/Users/register', {
+        name: nickname,
+        email,
+        password,
+        confirmPassword,
+        role
+      });
+      return res.data;
+    } catch (error) {
+      console.error('Signup error:', error.response?.data);
+      throw error;
+    }
   }
-}
 
 // Movies
 export async function getMovies() {

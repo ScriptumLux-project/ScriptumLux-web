@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import './Modal.css';
@@ -8,7 +7,6 @@ const SignUp = ({ isOpen, onClose, switchToLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('string'); //default role is set to 'string'*
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
@@ -25,19 +23,17 @@ const SignUp = ({ isOpen, onClose, switchToLogin }) => {
     }
     
     try {
-  
-      await signup(email, password, nickname, confirmPassword, role);
+      await signup(email, password, nickname, confirmPassword);
+
       onClose();
     } catch (err) {
       console.error("Registration error:", err);
       if (err.response && err.response.data) {
-      
         if (typeof err.response.data === 'string') {
           setError(err.response.data);
         } else if (err.response.data.message) {
           setError(err.response.data.message);
         } else if (err.response.data.errors) {
-        
           const firstErrorKey = Object.keys(err.response.data.errors)[0];
           setError(err.response.data.errors[firstErrorKey][0]);
         } else {

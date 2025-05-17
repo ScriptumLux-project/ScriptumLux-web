@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error parsing user from localStorage:", error);
-  
       localStorage.removeItem('user');
       localStorage.removeItem('accessToken');
     } finally {
@@ -42,18 +41,43 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password, nickname, confirmPassword, role = "string") => {
     try {
-      //role - string by default*
-      const roleToUse = role || "string";
+      const response = await apiSignup(email, password, nickname, confirmPassword, role);
       
-      const response = await apiSignup(email, password, nickname, confirmPassword, roleToUse);
-      
-      if (response && response.user && response.token) {
+     
+      if (response && response.token) {
+        
+        let userData = response.user;
+        
+        if (!userData) {
+          userData = {
+            name: nickname,
+            email: email,
+            
+            role: role
+          };
+        }
+        
+        localStorage.setItem('accessToken', response.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setCurrentUser(userData);
+        return userData;
+      } else if (response && response.user && response.token) {
+        
         localStorage.setItem('accessToken', response.token);
         localStorage.setItem('user', JSON.stringify(response.user)); 
         setCurrentUser(response.user);
         return response.user;
       } else {
-        throw new Error("Invalid response format from server");
+        
+        const loginResponse = await apiLogin(email, password);
+        if (loginResponse && loginResponse.token) {
+          localStorage.setItem('accessToken', loginResponse.token);
+          localStorage.setItem('user', JSON.stringify(loginResponse.user || { email, name: nickname }));
+          setCurrentUser(loginResponse.user || { email, name: nickname });
+          return loginResponse.user;
+        } else {
+          throw new Error("Invalid response format from server");
+        }
       }
     } catch (error) {
       console.error("Signup error:", error);
