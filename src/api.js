@@ -23,6 +23,7 @@ api.interceptors.response.use(
             localStorage.removeItem('accessToken');
             localStorage.removeItem('user');
         }
+        console.error('API Error:', error.response?.data || error.message);
         return Promise.reject(error);
     }
 );
@@ -45,18 +46,47 @@ export async function getMovies() {
 }
 
 export async function getMovieDetails(id) {
-    const res = await api.get(`/Movies/${id}`);
-    return res.data;
+    try {
+        const res = await api.get(`/Movies/${id}`);
+        return res.data;
+    } catch (error) {
+        console.error(`Error fetching movie ${id}:`, error.response?.data || error.message);
+        
+        // If we get a 404, try to fetch from the movies list as a fallback
+        if (error.response && error.response.status === 404) {
+            try {
+                const allMovies = await getMovies();
+                const movie = allMovies.find(m => m.movieId === parseInt(id) || m.id === parseInt(id));
+                
+                if (movie) {
+                    return movie;
+                }
+            } catch (fallbackError) {
+                console.error('Fallback fetch failed:', fallbackError);
+            }
+        }
+        
+        throw error;
+    }
 }
 
 // Comments
 export async function getComments(movieId) {
-    const res = await api.get(`/movies/${movieId}/comments`);
-    return res.data;
+    try {
+        const res = await api.get(`/Comments/movie/${movieId}`);
+        return res.data;
+    } catch (error) {
+        console.error(`Error fetching comments for movie ${movieId}:`, error.response?.data || error.message);
+        // Return empty array instead of throwing to prevent component crash
+        return [];
+    }
 }
 
 export async function postComment(movieId, comment) {
-    const res = await api.post(`/movies/${movieId}/comments`, { content: comment });
+    const res = await api.post(`/Comments`, { 
+        movieId: parseInt(movieId), 
+        content: comment 
+    });
     return res.data;
 }
 
@@ -83,5 +113,10 @@ export async function deletePlaylist(id) {
 
 export async function addMovieToPlaylist(playlistId, movieId) {
     const res = await api.post(`/playlists/${playlistId}/movies`, { movieId });
+    return res.data;
+}
+
+export async function deleteMovie(id) {
+    const res = await api.delete(`/Movies/${id}`);
     return res.data;
 }

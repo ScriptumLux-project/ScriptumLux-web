@@ -1,19 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UsersList.css'; 
 import { IoArrowBack } from "react-icons/io5";
-import { mockMovies } from '../../../mockData/data'; 
 import { FaRegTrashAlt } from "react-icons/fa";
-import {useState} from 'react';
+import { useMovies } from '../../context/MovieContext';
+import { deleteMovie } from '../../../api';
 
 const MovieList = () => {
   const navigate = useNavigate();
+  const { movies: apiMovies, loading, error } = useMovies(); 
+  const [movies, setMovies] = useState([]);
 
-  const [movies, setMovies] = useState(mockMovies);
+  useEffect(() => {
+    if (apiMovies) {
+      const normalized = apiMovies.map(movie => ({
+        ...movie,
+        id: movie.id ?? movie.movieId,
+      }));
+      setMovies(normalized);
+    }
+  }, [apiMovies]);
 
-  const handleDeleteMovie = (movieId) => {
-    const updatedMovies = movies.filter(movie => movie.id !== movieId);
-    setMovies(updatedMovies);
+  const handleDeleteMovie = async (movieId) => {
+    if (!movieId) {
+      console.error('Invalid movie ID:', movieId);
+      return;
+    }
+
+    try {
+      console.log('Deleting movie with ID:', movieId);
+      await deleteMovie(movieId);
+      
+      const updatedMovies = movies.filter(movie => movie.id !== movieId);
+      setMovies(updatedMovies);
+    } catch (error) {
+      const status = error.response?.status;
+      const message = error.response?.data || error.message;
+      console.error(`Error deleting movie (status ${status}):`, message);
+      alert(`Failed to delete movie. Server responded with status ${status}`);
+    }
   };
 
   const handleBackClick = () => {
@@ -21,8 +46,33 @@ const MovieList = () => {
   };
 
   const formatGenres = (genres) => {
+    if (!genres) return 'N/A';
     return genres.map(genre => genre.name).join(', ');
   };
+
+  if (loading) {
+    return (
+      <div className="admin-users-list-container">
+        <div className="admin-users-list-content">
+          <div className="admin-users-list-header">
+            <h1>Loading movies...</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="admin-users-list-container">
+        <div className="admin-users-list-content">
+          <div className="admin-users-list-header">
+            <h1>Error loading movies: {error}</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-users-list-container">
