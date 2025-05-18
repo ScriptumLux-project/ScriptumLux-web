@@ -1,4 +1,4 @@
-// src/api.js
+// src/api.js 
 import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5292';
@@ -103,8 +103,34 @@ export async function getPlaylists() {
   return res.data;
 }
 
-export async function createPlaylist(name, firstMovieId) {
-  const res = await api.post('/playlists', { title: name, firstMovieId });
+export async function createPlaylist(name, firstMovieId = null) {
+  const user = localStorage.getItem('user');
+  let userId = 0;
+  
+  if (user) {
+    try {
+      const userData = JSON.parse(user);
+      userId = userData.id;
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+    }
+  }
+  
+  const playlistData = { 
+    name: name,
+    userId: userId
+  };
+  
+  const res = await api.post('/playlists', playlistData);
+  
+  if (firstMovieId && res.data && res.data.id) {
+    try {
+      await addMovieToPlaylist(res.data.id, firstMovieId);
+    } catch (error) {
+      console.error("Error adding first movie to playlist:", error);
+    }
+  }
+  
   return res.data;
 }
 
@@ -119,7 +145,7 @@ export async function deletePlaylist(id) {
 }
 
 export async function addMovieToPlaylist(playlistId, movieId) {
-  const res = await api.post(`/playlists/${playlistId}/movies`, { movieId });
+  const res = await api.post(`/playlists/${playlistId}/movies`, { movieId: parseInt(movieId) });
   return res.data;
 }
 
@@ -142,4 +168,66 @@ export async function deleteUser(id) {
 export async function getUserById(id) {
   const res = await api.get(`/Users/${id}`);
   return res.data;
+}
+
+// History
+export async function getUserHistory(userId) {
+  try {
+    const res = await api.get('/History');
+
+    return res.data.filter(item => item.userId === parseInt(userId));
+  } catch (error) {
+    console.error('Error fetching user history:', error);
+    throw error;
+  }
+}
+
+export async function addToHistory(movieId) {
+
+  const user = localStorage.getItem('user');
+  let userId = 0;
+  
+  if (user) {
+    try {
+      const userData = JSON.parse(user);
+      userId = userData.id;
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+    }
+  }
+  
+  try {
+    const historyData = {
+      userId: userId,
+      movieId: parseInt(movieId),
+      viewedAt: new Date().toISOString()
+    };
+    
+    const res = await api.post('/History', historyData);
+    return res.data;
+  } catch (error) {
+    console.error('Error adding to history:', error);
+    throw error;
+  }
+}
+
+export async function deleteHistoryItem(id) {
+  try {
+    const res = await api.delete(`/History/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error('Error deleting history item:', error);
+    throw error;
+  }
+}
+
+export async function clearUserHistory(userId) {
+  try {
+    // If your API has a dedicated endpoint for clearing user history
+    const res = await api.delete(`/History/user/${userId}`);
+    return res.data;
+  } catch (error) {
+    console.error('Error clearing user history:', error);
+    throw error;
+  }
 }
