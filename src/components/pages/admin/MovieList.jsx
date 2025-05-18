@@ -11,6 +11,7 @@ const MovieList = () => {
   const { movies: apiMovies, loading, error } = useMovies(); 
   const [movies, setMovies] = useState([]);
 
+
   useEffect(() => {
     if (apiMovies) {
       const normalized = apiMovies.map(movie => ({

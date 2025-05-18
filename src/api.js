@@ -77,6 +77,21 @@ export async function getMovieDetails(id) {
     throw error;
   }
 }
+export async function createMovie(movieDto) {
+    // movieDto должен соответствовать MovieCreateDto на бэке
+    const res = await api.post('/Movies', movieDto);
+    return res.data;
+}
+
+export async function getGenres() {
+  const res = await api.get('/Genres');
+  return res.data;  // массив { genreId, name }
+}
+
+export async function createGenre(dto) {
+  const res = await api.post('/Genres', dto);
+  return res.data;  // { genreId, name }
+}
 
 // Comments
 export async function getComments(userId) {
