@@ -23,7 +23,8 @@ const SignUp = ({ isOpen, onClose, switchToLogin }) => {
     }
     
     try {
-      await signup(email, password, nickname, confirmPassword);
+
+      await signup(email, password, nickname, confirmPassword, "string");
 
       onClose();
     } catch (err) {

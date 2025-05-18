@@ -25,6 +25,8 @@ const Navbar = () => {
                       location.pathname.includes('/admin-movies-list') ||
                       location.pathname.includes('/admin-comments-list');
 
+  const isAdmin = currentUser?.role === 'admin';
+
   const toggleDropdown = () => setShowDropdown(prev => !prev);
 
   const handleLogout = () => {
@@ -90,7 +92,7 @@ const Navbar = () => {
 
           <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>Catalogue</Link>
 
-          {currentUser && (
+          {currentUser && isAdmin && (
             <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'nav-link active' : 'nav-link'}>
               Dashboard
             </Link>
@@ -107,7 +109,9 @@ const Navbar = () => {
                   <Link to="/account" className="navbar-dropdown-item">Account</Link>
                   <Link to="/playlists" className="navbar-dropdown-item">Playlist</Link>
                   <Link to="/history" className="navbar-dropdown-item">History</Link>
-                  <Link to="/dashboard" className="navbar-dropdown-item">Dashboard</Link>
+                  {isAdmin && (
+                    <Link to="/dashboard" className="navbar-dropdown-item">Dashboard</Link>
+                  )}
                   <button onClick={handleLogout} className="navbar-dropdown-item">Log Out</button>
                 </div>
               )}
@@ -121,7 +125,6 @@ const Navbar = () => {
         </div>
       </nav>
       
-      {/* Modals */}
       <LoginModal 
         isOpen={isLoginModalOpen} 
         onClose={closeModals} 

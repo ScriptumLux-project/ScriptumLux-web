@@ -84,7 +84,7 @@ const UsersList = () => {
               <tr>
                 <th>Nickname</th>
                 <th>Email</th>
-                <th>Date of Registration</th>
+                <th>Date</th>
                 <th>Comments</th>
                 <th>Action</th>
               </tr>

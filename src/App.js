@@ -21,9 +21,30 @@ function App() {
     return localStorage.getItem('accessToken') !== null;
   };
 
-  //----------------------Protection----------------------*
+  //if user is an admin**
+  const isAdmin = () => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const userData = JSON.parse(user);
+        return userData.role === 'admin';
+      } catch (error) {
+        return false;
+      }
+    }
+    return false;
+  };
+
+  //----------------------protection----------------------*
   const ProtectedRoute = ({ children }) => {
     if (!isAuthenticated()) {
+      return <Navigate to="/" />;
+    }
+    return children;
+  };
+  
+  const AdminRoute = ({ children }) => {
+    if (!isAuthenticated() || !isAdmin()) {
       return <Navigate to="/" />;
     }
     return children;
@@ -52,7 +73,7 @@ function App() {
                 </>
               } />
               
-              { /*----------------------Protection----------------------*/}
+              { /*----------------------protection----------------------*/}
               <Route path="/account" element={
                 <ProtectedRoute>
                   <>
@@ -98,40 +119,41 @@ function App() {
                 </ProtectedRoute>
               } />
 
+              { /*----------------------admin Only Routes----------------------*/}
               <Route path="/dashboard" element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <>
                     <Navbar />
                     <Dashboard />
                   </>
-                </ProtectedRoute>
+                </AdminRoute>
               } />
 
               <Route path="/admin-users-list" element={
-                <ProtectedRoute>
+                <AdminRoute>
                  <>
                   <Navbar />
                   <UsersList />
                  </>
-               </ProtectedRoute>
+               </AdminRoute>
              } />
 
               <Route path="/admin-movies-list" element={
-                <ProtectedRoute>
+                <AdminRoute>
                  <>
                    <Navbar />
                    <MovieList />
                  </>
-               </ProtectedRoute>
+               </AdminRoute>
              } />
 
              <Route path="/admin-comments-list/:userId" element={
-                <ProtectedRoute>
+                <AdminRoute>
                  <>
                    <Navbar />
                    <CommentsList />
                  </>
-               </ProtectedRoute>
+               </AdminRoute>
              } />
 
               <Route path="*" element={<Navigate to="/" replace />} />
