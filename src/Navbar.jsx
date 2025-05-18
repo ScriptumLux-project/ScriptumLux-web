@@ -77,18 +77,20 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-links">
-          <div className="navbar-search">
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="search-bar"
-                value={searchTerm}
-                onChange={handleSearch}
-              />
-              <CiSearch className="search-icon" />
+          {!isAdminPage && (
+            <div className="navbar-search">
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="search-bar"
+                  value={searchTerm}
+                  onChange={handleSearch}
+                />
+                <CiSearch className="search-icon" />
+              </div>
             </div>
-          </div>
+          )}
 
           <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>Catalogue</Link>
 
