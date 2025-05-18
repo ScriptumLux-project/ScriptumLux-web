@@ -77,6 +77,20 @@ export async function getMovieDetails(id) {
     throw error;
   }
 }
+export async function createMovie(movieDto) {
+    const res = await api.post('/Movies', movieDto);
+    return res.data;
+}
+
+export async function getGenres() {
+  const res = await api.get('/Genres');
+  return res.data;  
+}
+
+export async function createGenre(dto) {
+  const res = await api.post('/Genres', dto);
+  return res.data;  
+}
 
 // Comments
 export async function getComments(userId) {
@@ -223,7 +237,6 @@ export async function deleteHistoryItem(id) {
 
 export async function clearUserHistory(userId) {
   try {
-    // If your API has a dedicated endpoint for clearing user history
     const res = await api.delete(`/History/user/${userId}`);
     return res.data;
   } catch (error) {
