@@ -58,6 +58,7 @@ export async function signup(email, password, nickname, confirmPassword, role = 
     }
   }
 
+
 // Movies
 export async function getMovies() {
   const res = await api.get('/Movies');
@@ -78,19 +79,25 @@ export async function getMovieDetails(id) {
   }
 }
 export async function createMovie(movieDto) {
-    // movieDto должен соответствовать MovieCreateDto на бэке
     const res = await api.post('/Movies', movieDto);
     return res.data;
 }
 
+
+// Genres
 export async function getGenres() {
   const res = await api.get('/Genres');
-  return res.data;  // массив { genreId, name }
+  return res.data; // [{ genreId, name }]
 }
+export const getGenreById = async (id) => {
+  const res = await fetch(`/api/Genres/${id}`);
+  if (!res.ok) throw new Error('Genre not found');
+  return res.json(); // { genreId, name }
+};
 
 export async function createGenre(dto) {
   const res = await api.post('/Genres', dto);
-  return res.data;  // { genreId, name }
+  return res.data; // { genreId, name }
 }
 
 // Comments

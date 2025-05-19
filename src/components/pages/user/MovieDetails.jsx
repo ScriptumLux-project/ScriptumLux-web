@@ -12,7 +12,7 @@ import NewTimecodeModal from '../../modals/NewTimecodeModal';
 import PlaylistModal from '../../modals/PlaylistModal';
 import Login from '../../authorization/Login';
 import SignUp from '../../authorization/SignUp';
-import {getMovieDetails, getComments, postComment, getMovies} from '../../../api';
+import {getMovieDetails, getComments, postComment, getGenres, getMovies} from '../../../api';
 
 const MovieDetails = () => {
     const {movieId} = useParams();
@@ -20,6 +20,7 @@ const MovieDetails = () => {
     const {isAuthenticated} = useAuth();
     const [imgLoaded, setImgLoaded] = useState(false);
     const [movie, setMovie] = useState(null);
+    const [genres, setGenres] = useState([]);
     const [loading, setLoading] = useState(true);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -32,6 +33,17 @@ const MovieDetails = () => {
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
     useEffect(() => {
+        getGenres()
+            .then(data => setGenres(data))
+            .catch(err => {
+                console.error('Error loading genres:', err);
+                // при желании: setError или setGenresError
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!movieId) return;
+
         const fetchMovieData = async () => {
             console.count('fetchMovieData called');
             console.time('fetchMovie');  // старт измерения времени
@@ -44,22 +56,19 @@ const MovieDetails = () => {
                 const movieData = await getMovieDetails(movieId);
                 console.timeEnd('fetchMovie');  // логируем время загрузки
 
-                // 2) Маппим поля
-                const processedMovie = {
-                    ...movieData,
-                    id: movieData.movieId ?? movieData.id,
-                    posterUrl: movieData.posterUrl ?? '/api/placeholder/300/450',
+                setMovie({
+                    id: movieData.movieId,
+                    title: movieData.title,
+                    releaseDate: movieData.releaseYear,
+                    genreId: movieData.genreId,
                     rating: movieData.rating ?? 0,
-                    genres: movieData.genre
-                        ? [{id: movieData.genreId, name: movieData.genre}]
-                        : movieData.genres ?? [],
-                    releaseDate: movieData.releaseYear?.toString() || 'Unknown',
-                    duration: movieData.duration || 'Unknown',
+                    //description: data.description || 'No description available',
+                    posterUrl: movieData.posterUrl || '/api/placeholder/300/450',
                     country: movieData.country || 'Unknown',
-                    storyline: movieData.description || 'No description available'
-                };
-                //console.log('Processed movie data:', processedMovie);
-                setMovie(processedMovie);
+                    //duration: data.duration || 'Unknown',
+                    storyline: movieData.description || 'No storyline available'
+                });
+
 
                 // 3) Загружаем комментарии
                 try {
@@ -83,6 +92,10 @@ const MovieDetails = () => {
         }
     }, [movieId]);
 
+    const formatGenre = id => {
+        const g = genres.find(x => x.genreId === id);
+        return g ? g.name : 'Not specified';
+    };
 
     const renderStars = (rating) => {
         const stars = [];
@@ -114,13 +127,10 @@ const MovieDetails = () => {
         try {
             // Post comment to API
             const newCommentData = await postComment(movieId, newComment);
-
-            // Update local state with the new comment
             setComments(prevComments => [newCommentData, ...prevComments]);
             setNewComment('');
         } catch (error) {
             console.error('Error posting comment:', error);
-            // Show error message to user
             alert('Failed to post comment. Please try again later.');
         }
     };
@@ -270,22 +280,9 @@ const MovieDetails = () => {
                         <div className="detail-item">
                             <span className="detail-label">Genre:</span>
                             <div className="detail-value">
-                                {movie.genres && movie.genres.length > 0 ? (
-                                    movie.genres.map(genre => (
-                                        <span key={typeof genre === 'object' ? genre.id : genre}
-                                              className="genre-badge">
-                      {typeof genre === 'object' ? genre.name : genre}
-                    </span>
-                                    ))
-                                ) : (
-                                    <span className="genre-badge">Not specified</span>
-                                )}
+                                <span className="genre-badge">
+                                    {formatGenre(movie.genreId) }</span>
                             </div>
-                        </div>
-
-                        <div className="detail-item">
-                            <span className="detail-label">Duration:</span>
-                            <span className="detail-value">{movie.duration || 'Unknown'}</span>
                         </div>
                     </div>
 
