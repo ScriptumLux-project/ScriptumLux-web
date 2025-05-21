@@ -12,7 +12,7 @@ import NewTimecodeModal from '../../modals/NewTimecodeModal';
 import PlaylistModal from '../../modals/PlaylistModal';
 import Login from '../../authorization/Login';
 import SignUp from '../../authorization/SignUp';
-import {getMovieDetails, getComments, postComment, getGenres, getMovies} from '../../../api';
+import {getSimilarMovies, getMovieDetails, getComments, postComment, getGenres, getMovies} from '../../../api';
 
 const MovieDetails = () => {
     const {movieId} = useParams();

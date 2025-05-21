@@ -192,7 +192,7 @@ const SignUp = ({ isOpen, onClose, switchToLogin }) => {
             <div className="form-group">
               <button
                   type="submit"
-                  className={`auth-button ${isLoading ? 'loading' : ''}`}
+                  className={`auth-button`}
                   disabled={isLoading}
               >
                 {isLoading ? (

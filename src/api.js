@@ -65,6 +65,11 @@ export async function getMovies() {
   return res.data;
 }
 
+export async function getSimilarMovies(id) {
+  const res = await api.get(`/ai/similar/${id}`);
+  return res.data;
+}
+
 export async function getMovieDetails(id) {
   try {
     const res = await api.get(`/Movies/${id}`);
