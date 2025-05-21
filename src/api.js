@@ -101,10 +101,17 @@ export async function createGenre(dto) {
 }
 
 // Comments
-export async function getComments(userId) {
+export async function getComments(movieId) {
+  try {
     const res = await api.get('/Comments');
-    return res.data.filter(comment => comment.userId === Number(userId)); 
+    // Фильтруем по movieId (предполагается, что у каждого комментария есть поле movieId)
+    return res.data.filter(comment => comment.movieId === Number(movieId));
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    throw error;
   }
+}
+
   
 export async function deleteComment(id) {
   const res = await api.delete(`/Comments/${id}`);
