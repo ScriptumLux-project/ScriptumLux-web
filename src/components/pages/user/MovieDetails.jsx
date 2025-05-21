@@ -334,28 +334,37 @@ const MovieDetails = () => {
                     </form>
 
                     {comments.length > 0 ? (
-                        comments.map(comment => (
-                            <div key={comment.id || `temp-${Date.now()}-${Math.random()}`} className="comment-item">
-                                <img
-                                    src={comment.avatar || "/api/placeholder/42/42"}
-                                    alt={`${comment.user || 'User'}'s avatar`}
-                                    className="comment-avatar"
-                                />
-                                <div className="comment-content-container">
-                                    <div className="comment-header">
-                    <span className="comment-user">
-                      {comment.user || comment.username || 'Anonymous'}
-                        <span
-                            className="comment-date"> — {comment.date || (comment.createdAt ? new Date(comment.createdAt).toISOString().split('T')[0] : 'Unknown')}</span>
-                    </span>
+                        comments.map(comment => {
+                            const getNickname = c => {
+                                return typeof c.userName === 'string' && c.userName.trim()
+                                    ? c.userName
+                                    : 'Anonymous';
+                            };
+
+                            const nick = getNickname(comment);
+                            const date = comment.createdAt
+                                ? new Date(comment.createdAt).toISOString().split('T')[0]
+                                : 'Unknown';
+
+                            return (
+                                <div key={comment.commentId} className="comment-item">
+                                    <div className="comment-content-container">
+                                        <div className="comment-header">
+            <span className="comment-user">
+              {nick}
+                <span className="comment-date"> — {date}</span>
+            </span>
+                                        </div>
+                                        <p className="comment-content">{comment.content}</p>
                                     </div>
-                                    <p className="comment-content">{comment.content}</p>
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
                         <p>No comments yet. Be the first to comment!</p>
                     )}
+
+
                 </div>
             </div>
 
