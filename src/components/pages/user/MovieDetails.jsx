@@ -26,6 +26,8 @@ const MovieDetails = () => {
     const [newComment, setNewComment] = useState('');
     const [error, setError] = useState(null);
 
+    const [isPlaying, setIsPlaying] = useState(false);
+
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isNewTimecodeModalOpen, setIsNewTimecodeModalOpen] = useState(false);
     const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
@@ -66,7 +68,9 @@ const MovieDetails = () => {
                     posterUrl: movieData.posterUrl || '/api/placeholder/300/450',
                     country: movieData.country || 'Unknown',
                     //duration: data.duration || 'Unknown',
-                    storyline: movieData.description || 'No storyline available'
+                    storyline: movieData.description || 'No storyline available',
+                    videoUrl: movieData.videoUrl
+
                 });
 
 
@@ -297,24 +301,28 @@ const MovieDetails = () => {
                 {/* Player */}
                 <div className="player-section">
                     <h2 className="section-title">Watch Movie</h2>
+
                     <div className="video-container">
-                        <div className="video-placeholder">
-                            <FaPlay className="play-button"/>
-                        </div>
+                        { !isPlaying
+                            ? (
+                                <div
+                                    className="video-placeholder"
+                                    onClick={() => setIsPlaying(true)}
+                                >
+                                    <FaPlay className="play-button" />
+                                </div>
+                            ) : (
+                                <video
+                                    src={movie.videoUrl}     /* <-- ваш URL */
+                                    controls
+                                    autoPlay
+                                    className="movie-video"
+                                />
+                            )
+                        }
                     </div>
 
-                    <div className="movie-icons">
-                        <RxLapTimer
-                            className="movie-icon"
-                            onClick={handleHistoryClick}
-                            title="Timecode History"
-                        />
-                        <MdPlaylistPlay
-                            className="movie-icon"
-                            onClick={handlePlaylistClick}
-                            title="Add to Playlist"
-                        />
-                    </div>
+                    {/* остальной код (иконки и пр.) */}
                 </div>
 
                 {/* Comments */}
