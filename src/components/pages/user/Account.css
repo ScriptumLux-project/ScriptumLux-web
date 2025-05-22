@@ -218,3 +218,129 @@
   transform: none;
   box-shadow: none;
 }
+
+/* Стили для кнопки удаления плейлистов */
+.playlist-card {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.playlist-card.deleting {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.playlist-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: rgba(231, 76, 60, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  font-size: 16px;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.playlist-card:hover .playlist-delete-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.playlist-delete-btn:hover {
+  background: rgba(192, 57, 43, 1);
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+}
+
+.playlist-delete-btn:active {
+  transform: scale(0.95);
+}
+
+.playlist-delete-btn:disabled {
+  background: rgba(149, 165, 166, 0.9);
+  cursor: not-allowed;
+  transform: scale(1);
+}
+
+.playlist-delete-btn:disabled:hover {
+  background: rgba(149, 165, 166, 0.9);
+  transform: scale(1);
+  box-shadow: none;
+}
+
+/* Спиннер загрузки для кнопки удаления */
+.delete-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Улучшение видимости кнопки на мобильных устройствах */
+@media (max-width: 768px) {
+  .playlist-delete-btn {
+    opacity: 1;
+    transform: scale(1);
+    background: rgba(231, 76, 60, 0.8);
+  }
+
+  .playlist-card:hover .playlist-delete-btn {
+    background: rgba(192, 57, 43, 0.9);
+  }
+}
+
+/* Дополнительные стили для улучшения UX */
+.playlist-card-wrapper {
+  position: relative;
+}
+
+.playlist-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.playlist-card.deleting:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Стили для сообщений об ошибках */
+.playlists-error {
+  color: #e74c3c;
+  background: #fdf2f2;
+  border: 1px solid #e74c3c;
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Улучшение стилей для "No playlists available" */
+.no-items-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #ddd;
+}
