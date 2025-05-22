@@ -144,14 +144,14 @@
 
 /*DETAILS/STORYLINE*/
 .section-title {
+  position: relative;
+  padding-bottom: 24px;    /* место под линию */
+  margin-bottom: 32px;
   font-size: 20px;
   color: #666;
-  top: -30px;
-  margin-bottom: 25px;
   font-weight: 500;
   text-transform: uppercase;
-  padding-bottom: 15px;
-  position: relative;
+  line-height: 1.2;
   z-index: 2;
 }
 
@@ -187,31 +187,10 @@
   position: relative;
 }
 
-.cast-section .section-title::after,
-.player-section .section-title::after,
-.comments-section .section-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 16px;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(to right, gold, rgba(108, 108, 108, 0.2));
-}
 
-.cast-section .section-title::before,
-.player-section .section-title::before,
-.comments-section .section-title::before {
-  content: "";
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #f0c63e;
-  z-index: 1;
-}
+
+
+
 
 .detail-item {
   margin-bottom: 0;
@@ -440,3 +419,56 @@
   color: #e53935;
   font-family: 'Poppins', sans-serif;
 }
+/* ——— Секция рекомендаций ——— */
+.recommendations-section {
+  margin-top: 60px;      /* отступ над гридом */
+  position: relative;
+  z-index: 1;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  justify-content: center;
+  gap: 16px;
+  overflow: visible;
+  padding: 0;
+}
+
+.recommendation-item {
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  background-color: #222;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+.recommendation-item:hover {
+  transform: translateY(-4px);
+}
+
+.recommendation-poster img {
+  display: block;
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+.recommendation-title {
+  margin: 8px 0;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+  text-align: center;
+  flex-grow: 1;
+}
+

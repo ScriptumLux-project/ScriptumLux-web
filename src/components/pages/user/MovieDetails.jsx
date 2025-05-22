@@ -26,6 +26,13 @@ const MovieDetails = () => {
     const [newComment, setNewComment] = useState('');
     const [error, setError] = useState(null);
 
+    // Рекомендации
+    const [similarMovies, setSimilarMovies] = useState([]);
+    const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+    const [recommendationsError, setRecommendationsError] = useState(null);
+    // Добавляем состояние для отслеживания загрузки постеров рекомендаций
+    const [recommendationImagesLoaded, setRecommendationImagesLoaded] = useState({});
+
     const [isPlaying, setIsPlaying] = useState(false);
 
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
@@ -39,7 +46,6 @@ const MovieDetails = () => {
             .then(data => setGenres(data))
             .catch(err => {
                 console.error('Error loading genres:', err);
-                // при желании: setError или setGenresError
             });
     }, []);
 
@@ -48,15 +54,17 @@ const MovieDetails = () => {
 
         const fetchMovieData = async () => {
             console.count('fetchMovieData called');
-            console.time('fetchMovie');  // старт измерения времени
+            console.time('fetchMovie');
 
             setLoading(true);
             setError(null);
+            // Сбрасываем состояние загрузки основного постера
+            setImgLoaded(false);
 
             try {
                 // 1) Загружаем детали
                 const movieData = await getMovieDetails(movieId);
-                console.timeEnd('fetchMovie');  // логируем время загрузки
+                console.timeEnd('fetchMovie');
 
                 setMovie({
                     id: movieData.movieId,
@@ -64,15 +72,11 @@ const MovieDetails = () => {
                     releaseDate: movieData.releaseYear,
                     genreId: movieData.genreId,
                     rating: movieData.rating ?? 0,
-                    //description: data.description || 'No description available',
                     posterUrl: movieData.posterUrl || '/api/placeholder/300/450',
                     country: movieData.country || 'Unknown',
-                    //duration: data.duration || 'Unknown',
                     storyline: movieData.description || 'No storyline available',
                     videoUrl: movieData.videoUrl
-
                 });
-
 
                 // 3) Загружаем комментарии
                 try {
@@ -95,6 +99,49 @@ const MovieDetails = () => {
             fetchMovieData();
         }
     }, [movieId]);
+
+    // Отдельный useEffect для загрузки рекомендаций после основной загрузки
+    useEffect(() => {
+        if (!movieId || loading) return;
+
+        const fetchSimilarMovies = async () => {
+            setRecommendationsLoading(true);
+            setRecommendationsError(null);
+            setRecommendationImagesLoaded({});
+
+            try {
+                const similarData = await getSimilarMovies(movieId);
+
+                const top6 = Array.isArray(similarData)
+                    ? similarData.slice(0, 6)
+                    : [];
+
+                const enriched = await Promise.all(
+                    top6.map(async sim => {
+                        const details = await getMovieDetails(sim.movieId);
+                        return {
+                            movieId:    sim.movieId,
+                            title:      sim.title,
+                            description: sim.description,
+                            posterUrl:  details.posterUrl    || '/api/placeholder/200/300',
+                            rating:     details.rating,
+                            genreId:    details.genreId,
+                        };
+                    })
+                );
+
+                setSimilarMovies(enriched);
+            } catch (err) {
+                console.error('Error fetching similar movies:', err);
+                setRecommendationsError('Failed to load recommendations');
+            } finally {
+                setRecommendationsLoading(false);
+            }
+        };
+
+        const timeoutId = setTimeout(fetchSimilarMovies, 500);
+        return () => clearTimeout(timeoutId);
+    }, [movieId, loading]);
 
     const formatGenre = id => {
         const g = genres.find(x => x.genreId === id);
@@ -129,7 +176,6 @@ const MovieDetails = () => {
         }
 
         try {
-            // Post comment to API
             const newCommentData = await postComment(movieId, newComment);
             setComments(prevComments => [newCommentData, ...prevComments]);
             setNewComment('');
@@ -184,6 +230,76 @@ const MovieDetails = () => {
     const closeHistoryModal = () => setIsHistoryModalOpen(false);
     const closeNewTimecodeModal = () => setIsNewTimecodeModalOpen(false);
     const closePlaylistModal = () => setIsPlaylistModalOpen(false);
+
+    // Функция для получения корректного ID фильма
+    const getMovieId = (movie) => {
+        // Проверяем все возможные поля для ID
+        const id = movie.movieId || movie.id || movie.Movie_ID || movie.movie_id;
+        console.log('Getting movie ID from:', movie, 'Result:', id);
+        return id;
+    };
+
+    // Функция для получения корректного URL постера
+    const getPosterUrl = (movie) => {
+        const url = movie.posterUrl || movie.poster_url || movie.posterURL || movie.Poster_URL;
+        console.log('Getting poster URL for movie:', {
+            movie,
+            foundUrl: url,
+            finalUrl: url || '/api/placeholder/200/300'
+        });
+        return url || '/api/placeholder/200/300';
+    };
+
+    // Функция для обработки клика по рекомендации
+    const handleRecommendationClick = (recommendedMovie) => {
+        const targetMovieId = getMovieId(recommendedMovie);
+
+        console.log('Clicking on recommendation:', {
+            movie: recommendedMovie,
+            targetMovieId,
+            currentMovieId: movieId
+        });
+
+        if (!targetMovieId) {
+            console.error('No valid movie ID found in recommendation:', recommendedMovie);
+            return;
+        }
+
+        // Проверяем, что мы не переходим на ту же страницу
+        if (targetMovieId.toString() === movieId.toString()) {
+            console.log('Same movie, not navigating');
+            return;
+        }
+
+        // Используем navigate для программного перехода
+        navigate(`/movies/${targetMovieId}`);
+        // Прокручиваем страницу вверх после перехода
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 100);
+    };
+
+    // Функция для обработки загрузки изображения рекомендации
+    const handleRecommendationImageLoad = (movieId) => {
+        setRecommendationImagesLoaded(prev => ({
+            ...prev,
+            [movieId]: true
+        }));
+    };
+
+    // Функция для обработки ошибки загрузки изображения рекомендации
+    const handleRecommendationImageError = (e, movieId) => {
+        console.log('Image load error for movie:', movieId);
+        console.log('Failed URL:', e.target.src);
+        console.log('Error event:', e);
+        e.target.onerror = null; // Предотвращаем бесконечный цикл
+        e.target.src = "/api/placeholder/200/300";
+        // Отмечаем как загруженное, чтобы убрать placeholder
+        setRecommendationImagesLoaded(prev => ({
+            ...prev,
+            [movieId]: true
+        }));
+    };
 
     if (loading) {
         return (
@@ -249,6 +365,7 @@ const MovieDetails = () => {
                             onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = "/api/placeholder/300/450";
+                                setImgLoaded(true); // Отмечаем как загруженное даже при ошибке
                             }}
                         />
                     </div>
@@ -313,7 +430,7 @@ const MovieDetails = () => {
                                 </div>
                             ) : (
                                 <video
-                                    src={movie.videoUrl}     /* <-- ваш URL */
+                                    src={movie.videoUrl}
                                     controls
                                     autoPlay
                                     className="movie-video"
@@ -321,8 +438,67 @@ const MovieDetails = () => {
                             )
                         }
                     </div>
+                </div>
 
-                    {/* остальной код (иконки и пр.) */}
+                {/* Recommendations */}
+                <div className="recommendations-section">
+                    <h2 className="section-title">You Might Also Like</h2>
+
+                    {recommendationsLoading ? (
+                        <div className="recommendations-loading">
+                            <p>Loading recommendations...</p>
+                        </div>
+                    ) : recommendationsError ? (
+                        <div className="recommendations-error">
+                            <p>{recommendationsError}</p>
+                        </div>
+                    ) : similarMovies.length > 0 ? (
+                        <div className="recommendations-grid">
+                            {similarMovies.map((movie, index) => {
+                                const movieIdKey = getMovieId(movie) || `movie-${index}`;
+                                const posterUrl = getPosterUrl(movie);
+                                const isImageLoaded = recommendationImagesLoaded[movieIdKey];
+
+                                console.log('Rendering recommendation:', {
+                                    movie,
+                                    movieIdKey,
+                                    posterUrl,
+                                    isImageLoaded
+                                });
+
+                                return (
+                                    <div
+                                        key={movieIdKey}
+                                        className="recommendation-item"
+                                        onClick={() => handleRecommendationClick(movie)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <div className="recommendation-poster">
+                                            {!isImageLoaded && (
+                                                <div className="recommendation-poster-placeholder">
+                                                    <span>Loading...</span>
+                                                </div>
+                                            )}
+                                            <img
+                                                src={posterUrl}
+                                                alt={movie.title || 'Movie poster'}
+                                                className={`recommendation-image ${isImageLoaded ? 'visible' : 'hidden'}`}
+                                                onLoad={() => handleRecommendationImageLoad(movieIdKey)}
+                                                onError={(e) => handleRecommendationImageError(e, movieIdKey)}
+                                            />
+                                        </div>
+                                        <div className="recommendation-title">
+                                            {movie.title || 'Unknown Title'}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="no-recommendations">
+                            <p>No recommendations available at the moment.</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Comments */}
@@ -371,8 +547,6 @@ const MovieDetails = () => {
                     ) : (
                         <p>No comments yet. Be the first to comment!</p>
                     )}
-
-
                 </div>
             </div>
 
