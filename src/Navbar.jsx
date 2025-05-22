@@ -36,9 +36,11 @@ const Navbar = () => {
   };
 
   const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    //implementation* 
+    const value = e.target.value;
+    setSearchTerm(value);
+    navigate(`/?q=${encodeURIComponent(value)}`);
   };
+
   
   const openLoginModal = () => {
     setIsLoginModalOpen(true);
