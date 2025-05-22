@@ -106,16 +106,27 @@ export async function createGenre(dto) {
 }
 
 // Comments
-export async function getComments(movieId) {
+export async function getComments(filter) {
   try {
     const res = await api.get('/Comments');
-    // Фильтруем по movieId (предполагается, что у каждого комментария есть поле movieId)
-    return res.data.filter(comment => comment.movieId === Number(movieId));
+    let comments = res.data;
+
+    if (filter) {
+      if (filter.userId !== undefined) {
+        comments = comments.filter(c => c.userId === Number(filter.userId));
+      }
+      if (filter.movieId !== undefined) {
+        comments = comments.filter(c => c.movieId === Number(filter.movieId));
+      }
+    }
+
+    return comments;
   } catch (error) {
     console.error('Error fetching comments:', error);
     throw error;
   }
 }
+
 
   
 export async function deleteComment(id) {

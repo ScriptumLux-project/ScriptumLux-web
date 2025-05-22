@@ -17,7 +17,7 @@ const CommentsList = () => {
 
     const fetchComments = async () => {
       try {
-        const data = await getComments(numericUserId);
+        const data = await getComments({ userId: numericUserId });
 
         const commentArray = Array.isArray(data) ? data : (data.comments || []);
         setComments(commentArray);

@@ -80,7 +80,7 @@ const MovieDetails = () => {
 
                 // 3) Загружаем комментарии
                 try {
-                    const commentData = await getComments(movieId);
+                    const commentData = await getComments({ movieId });
                     setComments(Array.isArray(commentData) ? commentData : []);
                 } catch {
                     console.error('Error fetching comments');
