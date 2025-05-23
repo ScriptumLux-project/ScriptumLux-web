@@ -10,7 +10,7 @@
     border-radius: 8px;
     padding: 10px 0;
   }
-  
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -21,12 +21,12 @@
       transform: translateY(0);
     }
   }
-  
+
   .dropdown-content {
     display: flex;
     flex-direction: column;
   }
-  
+
   .dropdown-option {
     display: flex;
     align-items: center;
@@ -36,23 +36,23 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
-  
+
   .dropdown-option:last-child {
     border-bottom: none;
   }
-  
+
   .dropdown-option:hover {
     background-color: rgba(240, 198, 62, 0.1);
     color: #f0c63e;
   }
-  
+
   .dropdown-option-icon {
     display: flex;
     align-items: center;
     margin-right: 12px;
     font-size: 18px;
   }
-  
+
   .dropdown-option-text {
     font-weight: 400;
   }

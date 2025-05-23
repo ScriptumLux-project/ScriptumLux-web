@@ -1,4 +1,4 @@
-// src/api.js 
+// src/api.js
 import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5292';
@@ -58,7 +58,6 @@ export async function signup(email, password, nickname, confirmPassword, role = 
     }
 }
 
-
 // Movies
 export async function getMovies() {
     const res = await api.get('/Movies');
@@ -89,6 +88,44 @@ export async function createMovie(movieDto) {
     return res.data;
 }
 
+// Search Movies function
+export async function searchMovies(query) {
+    console.log('🔍 Searching movies with query:', query);
+
+    if (!query || typeof query !== 'string' || query.trim().length === 0) {
+        return [];
+    }
+
+    try {
+        // Option 1: If you have a dedicated search endpoint
+        // const res = await api.get(`/Movies/search?q=${encodeURIComponent(query.trim())}`);
+        // return res.data;
+
+        // Option 2: Search through all movies (fallback approach)
+        const allMovies = await getMovies();
+        const searchTerm = query.trim().toLowerCase();
+
+        const filteredMovies = allMovies.filter(movie => {
+            const title = (movie.title || movie.name || '').toLowerCase();
+            const description = (movie.description || movie.summary || '').toLowerCase();
+            const director = (movie.director || '').toLowerCase();
+
+            return title.includes(searchTerm) ||
+                description.includes(searchTerm) ||
+                director.includes(searchTerm);
+        });
+
+        console.log(`🔍 Found ${filteredMovies.length} movies for query: "${query}"`);
+        return filteredMovies;
+
+    } catch (error) {
+        console.error('🔍 Error searching movies:', error);
+
+        // Return empty array on error instead of throwing
+        // This prevents the search functionality from breaking the UI
+        return [];
+    }
+}
 
 // Genres
 export async function getGenres() {
@@ -129,7 +166,6 @@ export async function getComments(filter) {
     }
 }
 
-
 export async function deleteComment(id) {
     const res = await api.delete(`/Comments/${id}`);
     return res.data;
@@ -145,12 +181,108 @@ export async function postComment(movieId, comment) {
 
 // Playlists
 export async function getPlaylists() {
-    const res = await api.get('/playlists');
-    return res.data;
+    console.log('📋 Getting all playlists');
+
+    try {
+        const res = await api.get('/playlists');
+        console.log('📋 Playlists response:', res.data);
+        return res.data || [];
+    } catch (error) {
+        console.error('📋 Error getting playlists:', error);
+
+        if (error.response?.status === 404) {
+            // No playlists found
+            return [];
+        }
+
+        throw new Error(`Failed to load playlists: ${error.message}`);
+    }
 }
 
+export async function getPlaylistMovies(playlistId) {
+    console.log('🎬 Getting movies for playlist:', playlistId);
+
+    if (!playlistId) {
+        throw new Error('Playlist ID is required');
+    }
+
+    try {
+        // GET /api/playlistmovies
+        const res = await api.get('/playlistmovies');
+        const allLinks = Array.isArray(res.data) ? res.data : [];
+
+        // Оставляем только связи для нужного плейлиста
+        const links = allLinks.filter(pm => pm.playlistId === Number(playlistId));
+
+        // По каждой связи запрашиваем детали фильма
+        const movies = await Promise.all(
+            links.map(async pm => {
+                try {
+                    return await getMovieDetails(pm.movieId);
+                } catch (err) {
+                    console.error(`Error loading movie ${pm.movieId}:`, err);
+                    return null;
+                }
+            })
+        );
+
+        // Убираем неудачные запросы
+        return movies.filter(m => m !== null);
+    } catch (error) {
+        console.error('🎬 Error getting playlist movies:', error);
+        throw new Error(`Failed to load playlist movies: ${error.message}`);
+    }
+}
+
+export async function getPlaylistById(playlistId) {
+    console.log('📋 Getting playlist by ID:', playlistId);
+
+    try {
+        const res = await api.get(`/playlists/${playlistId}`);
+        return res.data;
+    } catch (error) {
+        console.error('📋 Error getting playlist:', error);
+
+        if (error.response?.status === 404) {
+            throw new Error('Playlist not found');
+        }
+
+        throw new Error(`Failed to load playlist: ${error.message}`);
+    }
+}
+
+export async function removeMovieFromPlaylistDirect(playlistId, movieId) {
+    console.log('🗑️ Removing movie from playlist (direct):', { playlistId, movieId });
+
+    try {
+        const res = await api.delete(`/playlistmovies/playlist/${playlistId}/movie/${movieId}`);
+        return res.data;
+    } catch (error) {
+        console.error('🗑️ Error removing movie from playlist (direct):', error);
+        throw error;
+    }
+}
+
+export async function removeMovieFromPlaylist(playlistId, movieId) {
+    console.log('🗑️ Removing movie from playlist:', { playlistId, movieId });
+
+    if (!playlistId || !movieId) {
+        throw new Error('Both playlist ID and movie ID are required');
+    }
+
+    try {
+        // DELETE /api/playlistmovies/{playlistId}/{movieId}
+        await api.delete(`/playlistmovies/${Number(playlistId)}/${Number(movieId)}`);
+        console.log('🗑️ Movie removed from playlist successfully');
+    } catch (error) {
+        console.error('🗑️ Error removing movie from playlist:', error);
+        if (error.response?.status === 404) {
+            throw new Error('Movie or playlist not found');
+        }
+        throw new Error(`Failed to remove movie from playlist: ${error.message}`);
+    }
+}
 // Улучшенная функция createPlaylist
-// Улучшенная функция createPlaylist для api.js
 export async function createPlaylist(name, firstMovieId = null) {
     console.log('🚀 API createPlaylist called with:', { name, firstMovieId });
 
@@ -285,9 +417,66 @@ export async function createPlaylist(name, firstMovieId = null) {
     }
 }
 
+// Замените существующую функцию updatePlaylist в api.js на эту улучшенную версию
 export async function updatePlaylist(id, data) {
-    const res = await api.put(`/playlists/${id}`, data);
-    return res.data;
+    console.log('📝 Updating playlist:', { id, data });
+
+    if (!id) {
+        throw new Error('Playlist ID is required');
+    }
+
+    if (!data || (!data.name && !data.title)) {
+        throw new Error('Playlist name is required');
+    }
+
+    try {
+        // Подготавливаем данные для обновления
+        const updateData = {
+            name: data.name || data.title,
+            // Добавьте другие поля, если они нужны
+            ...(data.description && { description: data.description }),
+            ...(data.posterUrl && { posterUrl: data.posterUrl })
+        };
+
+        console.log('📝 Sending update data:', updateData);
+
+        const res = await api.put(`/playlists/${id}`, updateData);
+        console.log('📝 Playlist updated successfully:', res.data);
+
+        return res.data;
+
+    } catch (error) {
+        console.error('📝 Error updating playlist:', error);
+
+        if (error.response) {
+            const status = error.response.status;
+            const errorData = error.response.data;
+
+            switch (status) {
+                case 404:
+                    throw new Error('Playlist not found');
+                case 403:
+                    throw new Error('You do not have permission to edit this playlist');
+                case 401:
+                    throw new Error('You must be logged in to edit playlists');
+                case 400:
+                    if (errorData?.message) {
+                        throw new Error(errorData.message);
+                    } else if (errorData?.errors) {
+                        const validationErrors = Object.values(errorData.errors).flat();
+                        throw new Error(validationErrors.join(', '));
+                    } else {
+                        throw new Error('Invalid playlist data');
+                    }
+                default:
+                    throw new Error(`Server error: ${status}`);
+            }
+        } else if (error.request) {
+            throw new Error('Network error: Unable to connect to server');
+        } else {
+            throw error;
+        }
+    }
 }
 
 // Улучшенная функция удаления плейлиста

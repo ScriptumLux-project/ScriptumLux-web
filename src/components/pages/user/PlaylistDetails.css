@@ -1,10 +1,16 @@
+/* Updated Design Improvements for PlaylistDetails */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-text: #666;
+  --color-text: #e0e0e0;
   --color-accent: #f0c63e;
-  --color-background: #090919;
-  --color-light: #f5ebdd;
+  --color-background: #0c0c1a;
+  --color-light: #ffffff;
+  --color-muted-bg: rgba(255, 255, 255, 0.05);
+  --color-card-bg: rgba(255, 255, 255, 0.1);
+  --radius-lg: 1.5rem;
+  --radius-md: 0.75rem;
+  --gap-lg: 2rem;
 }
 
 body, .playlist-details-page {
@@ -17,208 +23,345 @@ body, .playlist-details-page {
 
 .playlist-details-page {
   min-height: 100vh;
-  padding: 64px 0 40px;
-  overflow: auto;
+  padding: 4rem 1rem;
 }
 
 .playlist-details-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 1rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-light);
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  transition: color 0.2s ease;
+}
+.back-link:hover {
+  color: var(--color-accent);
+}
+.back-icon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
 }
 
 .playlist-details-header {
-  margin: 20px 0;
+  margin: 2rem 0;
+  text-align: center;
 }
-
 .playlist-details-title,
 .playlist-details-subtitle,
 .playlist-movies-title {
-  font-weight: 500;
-  color: var(--color-text);
+  font-weight: 600;
+  color: var(--color-light);
 }
-
 .playlist-details-title {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 2rem;
 }
-
 .playlist-details-subtitle,
 .playlist-movies-title {
-  font-size: 20px;
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
 }
 
 .playlist-details-content {
   display: flex;
-  gap: 40px;
-  margin-top: 30px;
+  flex-wrap: wrap;
+  gap: var(--gap-lg);
   align-items: flex-start;
 }
 
 .playlist-details-main {
-  flex-basis: 30%;
+  flex: 1 1 320px;
+  max-width: 400px;
 }
-
 .playlist-details-side {
-  flex-basis: 70%;
-  margin-top: -125px;
+  flex: 2 1 500px;
 }
 
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+.button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+.button-edit {
+  background-color: var(--color-accent);
+  color: #14142B;
+  border: none;
+  font-weight: 600;
+}
+.button-delete {
+  background-color: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  font-weight: 500;
+}
+.button-add-movie {
+  background-color: var(--color-accent);
+  color: #14142B;
+  border: none;
+}
+
+.playlist-holder {
+  width: 100%;
+  background: var(--color-card-bg);
+  border-radius: var(--radius-lg) var(--radius-md);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px var(--color-muted-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  gap: 1.5rem;
+}
+.playlist-holder-image {
+  width: 100%;
+  height: auto;
+  max-width: 280px;
+  border-radius: var(--radius-md);
+}
+.playlist-holder-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-light);
+  text-align: center;
+  margin: 0;
+}
+.playlist-holder-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Updated button styles to match playlists design */
+.playlist-holder-buttons .edit-button,
+.playlist-holder-buttons /* Стили для кнопки удаления фильма, чтобы она совпадала со стилем Playlists */
+.delete-button {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   height: 36px;
   font-size: 14px;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   max-width: 120px;
+
+  background-color: transparent;
+  color: #f0c63e;
+  border: 1px solid #f0c63e;
+  font-weight: 500;
 }
 
-.button:hover {
-  transform: scale(1.03);
-  opacity: 0.9;
+.delete-button:hover {
+  transform: scale(1.05);
 }
 
-.button-edit {
+
+.playlist-holder-buttons .edit-button {
+  background-color: #f0c63e !important;
+  color: #14142B !important;
+  border: none !important;
+  font-weight: 500;
+}
+
+.playlist-holder-buttons .delete-button {
+  background-color: transparent !important;
+  color: #f0c63e !important;
+  border: 1px solid #f0c63e !important;
+  font-weight: 500;
+}
+
+.playlist-holder-buttons .edit-button:hover,
+.playlist-holder-buttons .delete-button:hover {
+  transform: scale(1.05);
+}
+
+.add-movie-section {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.search-input-wrapper {
+  position: relative;
+}
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--color-text);
+}
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: transparent;
+  color: var(--color-light);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.search-input:focus {
+  border-color: var(--color-accent);
+}
+.search-loading,
+.no-search-results {
+  text-align: center;
+  color: var(--color-text);
+  padding: 1rem;
+  font-style: italic;
+}
+.search-results-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+.search-result-item:hover {
+  background-color: var(--color-muted-bg);
+}
+.search-result-poster {
+  width: 50px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-right: 0.75rem;
+}
+.search-result-info h5 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-result-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+.add-movie-btn {
   background-color: var(--color-accent);
   color: #14142B;
   border: none;
-  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  flex-shrink: 0;
 }
-
-.button-delete {
-  background-color: transparent;
-  color: var(--color-accent);
-  border: 1px solid var(--color-accent);
-}
-
-.playlist-action-buttons,
-.playlist-holder-buttons {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.playlist-holder {
-  width: 383px;
-  height: 428px;
-  padding: 20px;
-  border-radius: 30px 60px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.0) 60%, rgba(0,0,0,0.2) 100%);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.playlist-holder-image {
-  width: 250px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-top: 40px;
-}
-
-.playlist-holder-title {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-light);
-  text-align: center;
-  margin: 0;
+.add-movie-btn:hover {
+  background-color: #d4b12b;
 }
 
 .playlist-movies {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.5rem;
 }
-
 .playlist-movie-item {
-  padding: 20px;
+  background: var(--color-card-bg);
+  border-radius: var(--radius-md);
+  padding: 1rem;
 }
-
 .playlist-movie-content {
   display: flex;
-  align-items: flex-start;
-  gap: 40px;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
-
 .playlist-movie-poster {
   width: 120px;
   height: 180px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
-
 .playlist-movie-details {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  max-width: 466px;
-  word-wrap: break-word;
-  line-height: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 0.5rem;
 }
-
 .playlist-movie-title-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
-
 .playlist-movie-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
-  margin: 0;
-}
-
-.playlist-movie-remove {
   color: var(--color-light);
-  background: transparent;
-  border: none;
-  font-size: 16px;
-  font-weight: 500;
+  margin: 0;
   cursor: pointer;
-  transition: transform 0.3s ease, color 0.3s ease;
 }
-
+.playlist-movie-remove {
+  color: var(--color-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
 .playlist-movie-remove:hover {
   color: var(--color-accent);
-  transform: scale(1.3);
+  transform: scale(1.2);
 }
-
 .playlist-movie-genre,
 .playlist-movie-description,
 .playlist-movie-director,
 .playlist-movie-year {
-  font-size: 16px;
+  font-size: 0.9rem;
   margin: 0;
   color: var(--color-text);
 }
-
 .playlist-movie-description {
-  font-size: 14px;
-  max-width: 500px;
-  line-height: 1.5;
-  word-wrap: break-word;
+  line-height: 1.4;
+  max-height: 4.2rem;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
-
 .no-movies-message {
   color: var(--color-text);
   font-style: italic;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .playlist-details-content {
+    flex-direction: column;
+  }
+  .playlist-details-main,
+  .playlist-details-side {
+    max-width: 100%;
+  }
 }
