@@ -3,13 +3,11 @@ import './NewPlaylistModal.css';
 import { IoClose } from "react-icons/io5";
 
 const NewPlaylistModal = ({
-                            isOpen,        // флаг, открыт ли модал
-                            onClose,       // коллбэк закрытия
-                            onPlaylistCreate, // коллбэк создания (name, firstMovieId)
-                            movies = []    // сюда придут все фильмы (с дефолтным значением)
+                            isOpen,            // флаг, открыт ли модал
+                            onClose,           // коллбэк закрытия
+                            onPlaylistCreate   // коллбэк создания (name, firstMovieId)
                           }) => {
   const [newPlaylistName, setNewPlaylistName] = useState('');
-  const [selectedMovieId, setSelectedMovieId] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,7 +15,6 @@ const NewPlaylistModal = ({
   useEffect(() => {
     if (!isOpen) {
       setNewPlaylistName('');
-      setSelectedMovieId('');
       setError('');
       setIsCreating(false);
     }
@@ -28,17 +25,10 @@ const NewPlaylistModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('🔔 NewPlaylistModal ➔ handleSubmit fired', {
-      newPlaylistName,
-      selectedMovieId,
-      moviesLength: movies?.length
-    });
-
     if (!newPlaylistName.trim()) {
       setError('Please enter a playlist name');
       return;
     }
-
     if (newPlaylistName.trim().length < 2) {
       setError('Playlist name must be at least 2 characters long');
       return;
@@ -48,49 +38,26 @@ const NewPlaylistModal = ({
     setError('');
 
     try {
-      // Передаем только ID фильма (число) или null
-      const movieId = selectedMovieId ? parseInt(selectedMovieId, 10) : null;
-
-      console.log('🔔 NewPlaylistModal ➔ calling onPlaylistCreate with:', {
-        name: newPlaylistName.trim(),
-        movieId
-      });
-
-      await onPlaylistCreate(newPlaylistName.trim(), movieId);
-
-      // Если дошли до сюда, то создание прошло успешно
-      console.log('🔔 NewPlaylistModal ➔ playlist created successfully');
-
-    } catch (error) {
-      console.error('🔔 NewPlaylistModal ➔ error creating playlist:', error);
-
-      // Показываем понятную ошибку пользователю
-      if (error.message) {
-        setError(error.message);
-      } else if (error.response?.data?.message) {
-        setError(error.response.data.message);
-      } else if (error.response?.data) {
-        setError('Server error: ' + JSON.stringify(error.response.data));
-      } else {
-        setError('Failed to create playlist. Please try again.');
-      }
+      // Первый фильм не нужен — передаём null
+      await onPlaylistCreate(newPlaylistName.trim(), null);
+    } catch (err) {
+      console.error('Error creating playlist:', err);
+      setError(
+          err.response?.data?.message
+          || err.message
+          || 'Failed to create playlist. Please try again.'
+      );
     } finally {
       setIsCreating(false);
     }
   };
 
-  // Обработка закрытия модала
   const handleClose = () => {
-    if (!isCreating) {
-      onClose();
-    }
+    if (!isCreating) onClose();
   };
 
-  // Обработка клика по overlay
   const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget && !isCreating) {
-      onClose();
-    }
+    if (e.target === e.currentTarget && !isCreating) onClose();
   };
 
   return (
@@ -106,15 +73,7 @@ const NewPlaylistModal = ({
 
           <form onSubmit={handleSubmit} className="new-playlist-form">
             {error && (
-                <div className="error-message" style={{
-                  color: '#e74c3c',
-                  backgroundColor: '#fdf2f2',
-                  border: '1px solid #e74c3c',
-                  borderRadius: '4px',
-                  padding: '8px 12px',
-                  marginBottom: '16px',
-                  fontSize: '14px'
-                }}>
+                <div className="error-message">
                   {error}
                 </div>
             )}
@@ -127,7 +86,7 @@ const NewPlaylistModal = ({
                   value={newPlaylistName}
                   onChange={e => {
                     setNewPlaylistName(e.target.value);
-                    if (error) setError(''); // Очищаем ошибку при вводе
+                    if (error) setError('');
                   }}
                   placeholder="Enter playlist title"
                   autoFocus
@@ -135,33 +94,6 @@ const NewPlaylistModal = ({
                   disabled={isCreating}
                   required
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="movie-select">First movie (optional):</label>
-              <select
-                  id="movie-select"
-                  value={selectedMovieId}
-                  onChange={e => setSelectedMovieId(e.target.value)}
-                  disabled={isCreating}
-              >
-                <option value="">-- Select a movie --</option>
-                {movies && movies.length > 0 ? (
-                    movies.map(movie => {
-                      // Проверяем разные варианты ID и title
-                      const movieId = movie.id || movie.movieId || movie.Movie_Id;
-                      const movieTitle = movie.title || movie.name || movie.Title || `Movie ${movieId}`;
-
-                      return (
-                          <option key={`movie-${movieId}`} value={movieId}>
-                            {movieTitle}
-                          </option>
-                      );
-                    })
-                ) : (
-                    <option disabled>No movies available</option>
-                )}
-              </select>
             </div>
 
             <div className="new-playlist-form-actions">

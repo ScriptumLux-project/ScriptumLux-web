@@ -612,9 +612,7 @@ const PlaylistDetails = () => {
                                     alt={movieTitle}
                                     className="playlist-movie-poster clickable-poster"
                                     onClick={() => handleMovieClick(movieId)}
-                                    onError={(e) => {
-                                      e.target.src = '/default-movie-poster.jpg';
-                                    }}
+                                    onError={(e) => { e.target.src = '/default-movie-poster.jpg'; }}
                                 />
                                 <div className="playlist-movie-details">
                                   <div className="playlist-movie-title-container">
@@ -624,8 +622,6 @@ const PlaylistDetails = () => {
                                     >
                                       {movieTitle}
                                     </h3>
-
-                                    {/* Кнопка удаления фильма по аналогии с Playlists */}
                                     <button
                                         className="delete-button"
                                         onClick={(e) => {
@@ -639,15 +635,14 @@ const PlaylistDetails = () => {
                                     >
                                       {isDeleting ? <div className="delete-spinner"></div> : <MdDeleteOutline />}
                                     </button>
-
                                   </div>
+
+                                  {/* Жанры оставляем */}
                                   <p className="playlist-movie-genre">{genreText}</p>
-                                  <p className="playlist-movie-description">
-                                    {movie.description || movie.summary || 'No description available'}
-                                  </p>
-                                  <p className="playlist-movie-director">
-                                    Director: {movie.director || 'Unknown'}
-                                  </p>
+                                  {/* Убрали поля Director и Description */}
+                                  {/* <p className="playlist-movie-description">…</p> */}
+                                  {/* <p className="playlist-movie-director">…</p> */}
+
                                   <p className="playlist-movie-year">
                                     Year: {movie.year || movie.releaseYear || 'Unknown'}
                                   </p>
@@ -656,6 +651,7 @@ const PlaylistDetails = () => {
                             </div>
                         );
                       })}
+
                     </div>
                 )}
               </div>
