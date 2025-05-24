@@ -68,9 +68,27 @@
   padding-bottom: 2px;
 }
 
-.account-section {
-  margin-top: 60px;
+/* Специально для пустого состояния истории */
+.account-section .no-items-message {
+  /* Тёмный полупрозрачный фон вместо белого */
+  background-color: rgba(255, 255, 255, 0.05);
+  /* Светло-серый текст */
+  color: #aaa;
+  /* Отступы вокруг текста */
+  padding: 30px 20px;
+  /* Скруглённые углы */
+  border-radius: 8px;
+  /* Тонкая рамка чуть светлее фона */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Центрируем текст */
+  text-align: center;
+  /* Сделать шрифт чуть крупнее и курсив для акцента */
+  font-size: 16px;
+  font-style: italic;
+  /* Отступ сверху, чтобы не прилегало вплотную к заголовку */
+  margin-top: 20px;
 }
+
 
 .account-section-header {
   display: flex;

@@ -10,7 +10,16 @@ import { useMovies } from '../../context/MovieContext';
 import { usePlaylists } from '../../context/PlaylistContext';
 import { useAuth } from '../../context/AuthContext';
 import NewPlaylistModal from '../../modals/NewPlaylistModal';
-import { getPlaylists, createPlaylist, addMovieToPlaylist, deletePlaylist } from '../../../api';
+import {
+  getPlaylists,
+      createPlaylist,
+      addMovieToPlaylist,
+      deletePlaylist,
+      getUserHistory,       // ← сюда
+      deleteHistoryItem,    // ← необязательно, если будете удалять из истории
+  clearUserHistory      // ← необязательно, если будете очищать всю историю
+} from '../../../api.js';
+
 
 const Account = () => {
     const { movies } = useMovies();
@@ -50,23 +59,20 @@ const Account = () => {
         };
 
         const fetchUserHistory = async () => {
+            if (!currentUser?.id) return;
             try {
-                if (movies && movies.length > 0) {
-                    // Создаем уникальные ID для истории
-                    const mockHistory = movies.slice(0, 8).map((movie, index) => ({
-                        id: `history-${movie.id}-${index}-${Date.now()}`, // уникальный ID
-                        userId: currentUser?.id,
-                        movieId: movie.id,
-                        viewedAt: new Date(Date.now() - index * 1000 * 60 * 60).toISOString(), // разные времена
-                        movie: movie
-                    }));
-                    setHistoryMovies(mockHistory);
-                }
+                setIsLoading(true);
+                const historyData = await getUserHistory(currentUser.id);
+                // Если ваш API сразу возвращает детали фильма, можно сразу setHistoryMovies(historyData).
+                // Если нет — нужно дополнительно оборачивать в { movieId, viewedAt, movie: {...} }
+                setHistoryMovies(historyData);
             } catch (error) {
                 console.error("Error fetching user history:", error);
+                setError("Failed to load history. Please try again later.");
+            } finally {
+                setIsLoading(false);
             }
         };
-
         fetchUserPlaylists();
         fetchUserHistory();
     }, [currentUser, movies]);

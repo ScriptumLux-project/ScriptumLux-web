@@ -566,62 +566,228 @@ export async function getUserById(id) {
 
 // History
 export async function getUserHistory(userId) {
+    console.log('📺 Getting history for user:', userId);
+
+    if (!userId) {
+        throw new Error('User ID is required');
+    }
+
     try {
         const res = await api.get('/History');
+        console.log('📺 Raw history response:', res.data);
 
-        return res.data.filter(item => item.userId === parseInt(userId));
+        // Фильтруем по userId и сортируем по дате (новые сначала)
+        const userHistory = res.data
+            .filter(item => item.userId === parseInt(userId))
+            .sort((a, b) => new Date(b.viewedAt) - new Date(a.viewedAt));
+
+        console.log('📺 Filtered user history:', userHistory);
+        return userHistory;
     } catch (error) {
         console.error('Error fetching user history:', error);
+
+        // Если история не найдена (404), возвращаем пустой массив
+        if (error.response?.status === 404) {
+            return [];
+        }
+
         throw error;
     }
 }
 
 export async function addToHistory(movieId) {
+    console.log('📺 Adding movie to history:', movieId);
 
-    const user = localStorage.getItem('user');
-    let userId = 0;
+    if (!movieId) {
+        throw new Error('Movie ID is required');
+    }
 
-    if (user) {
-        try {
-            const userData = JSON.parse(user);
-            userId = userData.id;
-        } catch (error) {
-            console.error("Error parsing user data:", error);
+    // Получаем пользователя более надежным способом
+    let userId = null;
+
+    try {
+        const userFromStorage = localStorage.getItem('user');
+        if (userFromStorage && userFromStorage !== 'undefined') {
+            const userData = JSON.parse(userFromStorage);
+            userId = userData.id || userData.userId || userData.user_id;
         }
+
+        // Если не нашли в user, пробуем получить из токена
+        if (!userId) {
+            const token = localStorage.getItem('accessToken');
+            if (token && token !== 'undefined') {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userId = payload.sub || payload.userId || payload.user_id || payload.id;
+                } catch (tokenError) {
+                    console.error('Error decoding token:', tokenError);
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Error parsing user data:", error);
+    }
+
+    if (!userId) {
+        throw new Error('User not authenticated');
     }
 
     try {
+        // Проверяем, есть ли уже этот фильм в истории пользователя
+        const existingHistory = await getUserHistory(userId);
+        const alreadyInHistory = existingHistory.some(item =>
+            item.movieId === parseInt(movieId)
+        );
+
+        // Если фильм уже в истории, обновляем дату просмотра
+        if (alreadyInHistory) {
+            console.log('📺 Movie already in history, updating view time');
+            // Можно реализовать обновление существующей записи
+            // Пока просто не добавляем дубликат
+            return { message: 'Movie already in history' };
+        }
+
         const historyData = {
-            userId: userId,
+            userId: parseInt(userId),
             movieId: parseInt(movieId),
             viewedAt: new Date().toISOString()
         };
 
+        console.log('📺 Sending history data:', historyData);
+
         const res = await api.post('/History', historyData);
+        console.log('📺 History added successfully:', res.data);
+
         return res.data;
     } catch (error) {
         console.error('Error adding to history:', error);
+
+        // Если это ошибка валидации, показываем более понятное сообщение
+        if (error.response?.status === 400) {
+            throw new Error('Invalid data provided');
+        }
+
         throw error;
     }
 }
 
 export async function deleteHistoryItem(id) {
+    console.log('🗑️ Deleting history item:', id);
+
+    if (!id) {
+        throw new Error('History item ID is required');
+    }
+
     try {
         const res = await api.delete(`/History/${id}`);
+        console.log('🗑️ History item deleted successfully');
+
         return res.data;
     } catch (error) {
         console.error('Error deleting history item:', error);
+
+        if (error.response?.status === 404) {
+            throw new Error('History item not found');
+        } else if (error.response?.status === 403) {
+            throw new Error('You do not have permission to delete this item');
+        }
+
         throw error;
     }
 }
 
 export async function clearUserHistory(userId) {
+    console.log('🗑️ Clearing history for user:', userId);
+
+    if (!userId) {
+        throw new Error('User ID is required');
+    }
+
     try {
-        // If your API has a dedicated endpoint for clearing user history
+        // Пробуем использовать специальный endpoint для очистки истории пользователя
         const res = await api.delete(`/History/user/${userId}`);
+        console.log('🗑️ User history cleared successfully');
+
         return res.data;
     } catch (error) {
         console.error('Error clearing user history:', error);
+
+        // Если специального endpoint нет, очищаем по одному элементу
+        if (error.response?.status === 404) {
+            console.log('🗑️ No bulk delete endpoint, clearing items individually');
+
+            try {
+                // Получаем всю историю пользователя
+                const userHistory = await getUserHistory(userId);
+
+                // Удаляем каждый элемент по отдельности
+                const deletePromises = userHistory.map(item =>
+                    deleteHistoryItem(item.id || item.historyId)
+                );
+
+                await Promise.all(deletePromises);
+                console.log('🗑️ All history items deleted successfully');
+
+                return { message: 'History cleared successfully' };
+            } catch (individualDeleteError) {
+                console.error('Error during individual deletion:', individualDeleteError);
+                throw new Error('Failed to clear history completely');
+            }
+        }
+
+        if (error.response?.status === 403) {
+            throw new Error('You do not have permission to clear this history');
+        }
+
         throw error;
+    }
+}
+
+// Дополнительная функция для получения статистики истории
+export async function getHistoryStats(userId) {
+    console.log('📊 Getting history stats for user:', userId);
+
+    try {
+        const history = await getUserHistory(userId);
+
+        const stats = {
+            totalMovies: history.length,
+            watchedToday: 0,
+            watchedThisWeek: 0,
+            watchedThisMonth: 0,
+            mostWatchedGenres: {},
+            recentActivity: history.slice(0, 5) // Последние 5 фильмов
+        };
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        history.forEach(item => {
+            const viewDate = new Date(item.viewedAt);
+
+            if (viewDate >= today) {
+                stats.watchedToday++;
+            }
+            if (viewDate >= weekAgo) {
+                stats.watchedThisWeek++;
+            }
+            if (viewDate >= monthAgo) {
+                stats.watchedThisMonth++;
+            }
+        });
+
+        return stats;
+    } catch (error) {
+        console.error('Error getting history stats:', error);
+        return {
+            totalMovies: 0,
+            watchedToday: 0,
+            watchedThisWeek: 0,
+            watchedThisMonth: 0,
+            mostWatchedGenres: {},
+            recentActivity: []
+        };
     }
 }
