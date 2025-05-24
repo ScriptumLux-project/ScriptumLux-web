@@ -13,7 +13,7 @@
     left: 0;
     width: 100%;
     z-index: 1000;
-    box-sizing: border-box; 
+    box-sizing: border-box;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -23,33 +23,59 @@
     border-bottom: 2px solid #666;
 }
 
+/* Левая секция - логотип и AI поиск */
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex: 1;
+}
+
 .navbar-logo a {
     font-size: 24px;
-    margin-left: 40px;
     color: #f0c63e;
     text-decoration: none;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .dashboard-navbar .navbar-logo a {
     color: #666;
 }
 
+/* Центральная секция - основной поиск и навигация */
+.navbar-center {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex: 2;
+    justify-content: center;
+}
+
+/* Правая секция - пользователь */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
 .navbar-links {
     display: flex;
     align-items: center;
-    margin-left: auto;
+    gap: 30px;
 }
 
 .nav-link {
-    margin-right: 40px;
     color: #666;
     text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .nav-link:hover {
     color: #f0c63e;
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 
 .dashboard-navbar .nav-link:hover {
@@ -64,28 +90,84 @@
     color: #f0c63e;
 }
 
-.navbar-search {
-    margin: 0 15px; 
+/* AI Search Container */
+.ai-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/*Search*/
+.ai-search {
+    position: relative;
+}
+
+.ai-search-bar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid transparent;
+    color: white;
+    padding: 8px 12px 8px 12px; /* Убираем правый отступ для иконки */
+    border-radius: 20px;
+    width: 180px;
+    transition: all 0.3s ease;
+}
+
+.ai-search-bar::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.ai-search-bar:focus {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+    outline: none;
+    width: 220px;
+}
+
+.ai-icon {
+    color: white;
+    font-size: 18px;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ai-icon.loading {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateY(-50%) scale(1.1);
+    }
+}
+
+/* Обычный поиск */
+.navbar-search {
+    position: relative;
+}
 
 .search-container {
     position: relative;
     display: flex;
     align-items: center;
-    width: 340px; 
-    margin-right: 20px;
+    width: 340px;
 }
-  
+
 .search-bar {
     width: 100%;
-    padding: 8px 35px 8px 15px;
+    padding: 8px 12px 8px 15px; /* Убираем правый отступ для иконки */
     border: 1px solid #333;
     border-radius: 20px;
     font-size: 14px;
-    font-family: 'Poppins', sans-serif; 
-    margin-right: 10px;
+    font-family: 'Poppins', sans-serif;
     outline: none;
     background-color: rgba(108, 108, 108, 0.1);
     color: #f5ebdd;
@@ -100,13 +182,14 @@
 
 .search-icon {
     position: absolute;
-    right: 30px;
+    right: 15px; /* Уменьшаем отступ справа */
     top: 50%;
     transform: translateY(-50%);
     color: #666;
     font-size: 22px;
     cursor: pointer;
     pointer-events: none;
+    z-index: 1;
 }
 
 .search-bar:hover {
@@ -119,25 +202,111 @@
     box-shadow: 0 0 0 2px rgba(9, 9, 25, 0.1);
 }
 
-/*LogIn*/
+/* AI Results Dropdown */
+.ai-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 8px;
+    border: 1px solid #e1e5e9;
+    min-width: 300px;
+}
+
+.ai-result-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.ai-result-item:hover {
+    background-color: #f8f9fa;
+}
+
+.ai-result-item:last-child {
+    border-bottom: none;
+}
+
+.ai-result-item.loading {
+    text-align: center;
+    color: #667eea;
+    font-style: italic;
+    cursor: default;
+}
+
+.ai-result-item.loading:hover {
+    background-color: transparent;
+}
+
+.ai-result-item.no-results {
+    text-align: center;
+    color: #6c757d;
+    cursor: default;
+}
+
+.ai-result-item.no-results:hover {
+    background-color: transparent;
+}
+
+.ai-result-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ai-result-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.ai-result-description {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ai-result-genres {
+    color: #667eea;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Кнопки входа */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .login-btn {
     padding: 8px 16px;
     background-color: transparent;
     border: 1.5px solid white;
     color: white;
     border-radius: 10px;
-    margin-right: 20px;
-    font-family: 'Poppins', sans-serif; 
+    font-family: 'Poppins', sans-serif;
     text-decoration: none;
     font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .login-btn:hover {
     border: 1.5px solid #f0c63e;
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 
-/*SignUp*/
 .signup-btn {
     display: flex;
     align-items: center;
@@ -152,32 +321,34 @@
     cursor: pointer;
     text-decoration: none;
     outline: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
- 
+
 .signup-btn:hover {
     background-color: #f0c63e;
-    transform: scale(1.05); 
+    transform: scale(1.05);
     box-shadow:
-      0 0 10px rgba(255, 255, 255, 0.4),
-      0 0 20px rgba(255, 255, 255, 0.1);
+            0 0 10px rgba(255, 255, 255, 0.4),
+            0 0 20px rgba(255, 255, 255, 0.1);
     outline: none;
 }
 
-/*user*/
+/* Пользовательское меню */
 .user-dropdown {
     position: relative;
     display: flex;
     align-items: center;
 }
-  
+
 .user-icon-group {
     display: flex;
     align-items: center;
     cursor: pointer;
-    color: #666; 
+    color: #666;
     transition: color 0.3s ease;
 }
-  
+
 .user-icon-group:hover {
     color: #f0c63e;
 }
@@ -185,28 +356,28 @@
 .dashboard-navbar .user-icon-group:hover {
     color: #f0c63e;
 }
-  
+
 .user-icon {
     font-size: 40px;
 }
-  
+
 .dropdown-arrow {
     font-size: 22px;
     margin-left: 4px;
 }
-  
+
 .navbar-dropdown-menu {
     position: absolute;
     top: 100%;
     right: 0;
     margin-top: 10px;
-    background-color: #090919; 
+    background-color: #090919;
     border: 1px solid #666;
     border-radius: 8px;
     padding: 10px 0;
     z-index: 999;
     min-width: 160px;
-    width: 180px; 
+    width: 180px;
 }
 
 .dashboard-navbar .navbar-dropdown-menu {
@@ -214,13 +385,13 @@
     border: 2px solid #666;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-  
+
 .navbar-dropdown-item {
     display: block;
     width: 100%;
     text-align: left;
     padding: 10px 20px;
-    color: #f5ebdd; 
+    color: #f5ebdd;
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
@@ -233,12 +404,100 @@
 .dashboard-navbar .navbar-dropdown-item {
     color: #f0c63e;
 }
-  
-.navbar-dropdown-item:hover {
 
+.navbar-dropdown-item:hover {
     color: #f0c63e;
 }
 
 .dashboard-navbar .navbar-dropdown-item:hover {
-  color: #333;
+    color: #333;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .navbar {
+        padding: 0 15px;
+    }
+
+    .navbar-left,
+    .navbar-center,
+    .navbar-right {
+        gap: 20px;
+    }
+
+    .search-container {
+        width: 280px;
+    }
+
+    .ai-search-bar {
+        width: 150px;
+    }
+
+    .ai-search-bar:focus {
+        width: 180px;
+    }
+}
+
+@media (max-width: 992px) {
+    .navbar-center {
+        gap: 15px;
+    }
+
+    .search-container {
+        width: 240px;
+    }
+
+    .ai-search-bar {
+        width: 120px;
+    }
+
+    .ai-search-bar:focus {
+        width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .navbar-left,
+    .navbar-center,
+    .navbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .navbar-center {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-container,
+    .ai-search-bar {
+        width: 100%;
+    }
+
+    .ai-search-bar:focus {
+        width: 100%;
+    }
+
+    .ai-results-dropdown {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .navbar-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .auth-buttons {
+        justify-content: center;
+        width: 100%;
+    }
 }

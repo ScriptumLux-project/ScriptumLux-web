@@ -972,3 +972,30 @@ export async function deleteReview(reviewId) {
         throw new Error('Failed to delete review');
     }
 }
+
+
+
+export const getAiRecommendations = async (query, maxResults = 5) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await fetch(`/api/ai/recommendations?query=${encodeURIComponent(query)}&maxResults=${maxResults}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching AI recommendations:', error);
+        throw error;
+    }
+};
