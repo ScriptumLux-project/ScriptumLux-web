@@ -11,15 +11,15 @@ import { usePlaylists } from '../../context/PlaylistContext';
 import { useAuth } from '../../context/AuthContext';
 import NewPlaylistModal from '../../modals/NewPlaylistModal';
 import {
-  getPlaylists,
-      createPlaylist,
-      addMovieToPlaylist,
-      deletePlaylist,
-      getUserHistory,       // ← сюда
-      deleteHistoryItem,    // ← необязательно, если будете удалять из истории
-  clearUserHistory      // ← необязательно, если будете очищать всю историю
+    getPlaylists,
+    createPlaylist,
+    addMovieToPlaylist,
+    deletePlaylist,
+    getUserHistory,
+    getMovieDetails,
+    deleteHistoryItem,
+    clearUserHistory
 } from '../../../api.js';
-
 
 const Account = () => {
     const { movies } = useMovies();
@@ -33,6 +33,45 @@ const Account = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deletingPlaylistId, setDeletingPlaylistId] = useState(null);
+    const [historyLoading, setHistoryLoading] = useState(true);
+    const [historyError, setHistoryError] = useState(null);
+
+    // Универсальная функция для получения userId
+    const getCurrentUserId = () => {
+        try {
+            // Сначала пробуем получить из currentUser
+            if (currentUser?.id) {
+                return parseInt(currentUser.id);
+            }
+
+            // Затем из localStorage
+            const userFromStorage = localStorage.getItem('user');
+            if (userFromStorage && userFromStorage !== 'undefined') {
+                const userData = JSON.parse(userFromStorage);
+                const userId = userData.id || userData.userId || userData.user_id;
+                if (userId) {
+                    return parseInt(userId);
+                }
+            }
+
+            // Если не нашли в user, пробуем получить из токена
+            const token = localStorage.getItem('accessToken');
+            if (token && token !== 'undefined') {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const userId = payload.sub || payload.userId || payload.user_id || payload.id;
+                    if (userId) {
+                        return parseInt(userId);
+                    }
+                } catch (tokenError) {
+                    console.error('Error decoding token:', tokenError);
+                }
+            }
+        } catch (error) {
+            console.error("Error getting user ID:", error);
+        }
+        return null;
+    };
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -41,10 +80,11 @@ const Account = () => {
             try {
                 setIsLoading(true);
                 const allPlaylists = await getPlaylists();
+                const userId = getCurrentUserId();
 
-                if (currentUser && currentUser.id) {
+                if (userId) {
                     const userPlaylistsData = allPlaylists.filter(
-                        playlist => playlist.userId === currentUser.id
+                        playlist => playlist.userId === userId
                     );
                     setUserPlaylists(userPlaylistsData);
                 } else {
@@ -59,20 +99,82 @@ const Account = () => {
         };
 
         const fetchUserHistory = async () => {
-            if (!currentUser?.id) return;
+            const userId = getCurrentUserId();
+            console.log('📺 Fetching history for user ID:', userId);
+
+            if (!userId) {
+                console.log('📺 No user ID found, skipping history fetch');
+                setHistoryLoading(false);
+                return;
+            }
+
             try {
-                setIsLoading(true);
-                const historyData = await getUserHistory(currentUser.id);
-                // Если ваш API сразу возвращает детали фильма, можно сразу setHistoryMovies(historyData).
-                // Если нет — нужно дополнительно оборачивать в { movieId, viewedAt, movie: {...} }
-                setHistoryMovies(historyData);
+                setHistoryLoading(true);
+                setHistoryError(null);
+
+                // Получаем историю пользователя
+                const historyData = await getUserHistory(userId);
+                console.log('📺 Raw history data:', historyData);
+
+                if (!Array.isArray(historyData) || historyData.length === 0) {
+                    console.log('📺 No history found for user');
+                    setHistoryMovies([]);
+                    setHistoryLoading(false);
+                    return;
+                }
+
+                // Для каждой записи в истории получаем детали фильма
+                const moviesWithDetails = await Promise.allSettled(
+                    historyData.slice(0, 8).map(async (historyItem) => { // Берем только первые 8 для Account
+                        try {
+                            console.log('📺 Loading movie details for:', historyItem.movieId);
+                            const movieDetails = await getMovieDetails(historyItem.movieId);
+
+                            return {
+                                ...movieDetails,
+                                // Добавляем информацию из истории
+                                userId: historyItem.userId,
+                                movieId: historyItem.movieId,
+                                viewedAt: historyItem.viewedAt,
+                                historyId: historyItem.id,
+                                // Убираем description для экономии памяти
+                                description: undefined
+                            };
+                        } catch (movieError) {
+                            console.error(`Error loading movie ${historyItem.movieId}:`, movieError);
+                            // Возвращаем базовую информацию если не удалось загрузить детали
+                            return {
+                                id: historyItem.movieId,
+                                userId: historyItem.userId,
+                                movieId: historyItem.movieId,
+                                title: `Movie #${historyItem.movieId}`,
+                                posterUrl: '/placeholder-poster.jpg',
+                                year: 'Unknown',
+                                viewedAt: historyItem.viewedAt,
+                                historyId: historyItem.id,
+                                isPlaceholder: true
+                            };
+                        }
+                    })
+                );
+
+                // Обрабатываем результаты Promise.allSettled
+                const successfulMovies = moviesWithDetails
+                    .filter(result => result.status === 'fulfilled')
+                    .map(result => result.value)
+                    .filter(movie => movie !== null);
+
+                console.log('📺 Movies with details loaded:', successfulMovies.length);
+                setHistoryMovies(successfulMovies);
+
             } catch (error) {
-                console.error("Error fetching user history:", error);
-                setError("Failed to load history. Please try again later.");
+                console.error('Error fetching user history:', error);
+                setHistoryError("Failed to load history. Please try again later.");
             } finally {
-                setIsLoading(false);
+                setHistoryLoading(false);
             }
         };
+
         fetchUserPlaylists();
         fetchUserHistory();
     }, [currentUser, movies]);
@@ -86,33 +188,7 @@ const Account = () => {
             console.log('▶️ handleCreatePlaylist ➔ currentUser full object:', JSON.stringify(currentUser, null, 2));
 
             // Попытаемся получить ID пользователя из разных источников
-            let userId = null;
-
-            // 1. Попробуем из currentUser
-            if (currentUser?.id !== undefined) {
-                userId = currentUser.id;
-            } else if (currentUser?.userId !== undefined) {
-                userId = currentUser.userId;
-            } else if (currentUser?.user_id !== undefined) {
-                userId = currentUser.user_id;
-            }
-
-            // 2. Если не нашли в currentUser, попробуем localStorage
-            if (userId === null) {
-                try {
-                    const userFromStorage = localStorage.getItem('user');
-                    console.log('▶️ handleCreatePlaylist ➔ userFromStorage raw:', userFromStorage);
-
-                    if (userFromStorage && userFromStorage !== 'undefined') {
-                        const parsedUser = JSON.parse(userFromStorage);
-                        console.log('▶️ handleCreatePlaylist ➔ parsedUser:', parsedUser);
-
-                        userId = parsedUser.id || parsedUser.userId || parsedUser.user_id;
-                    }
-                } catch (storageError) {
-                    console.error('Error parsing user from localStorage:', storageError);
-                }
-            }
+            let userId = getCurrentUserId();
 
             console.log('▶️ handleCreatePlaylist ➔ final userId:', userId);
 
@@ -241,11 +317,42 @@ const Account = () => {
         }
     };
 
+    // Функция для форматирования даты просмотра
+    const formatViewedAt = (dateString) => {
+        if (!dateString) return '';
+
+        try {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInHours = (now - date) / (1000 * 60 * 60);
+
+            if (diffInHours < 1) {
+                const diffInMinutes = (now - date) / (1000 * 60);
+                if (diffInMinutes < 5) {
+                    return 'Just now';
+                }
+                return `${Math.floor(diffInMinutes)} minutes ago`;
+            } else if (diffInHours < 24) {
+                return `${Math.floor(diffInHours)} hours ago`;
+            } else if (diffInHours < 48) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+        } catch {
+            return '';
+        }
+    };
+
     const displayPlaylists = userPlaylists.slice(0, 4);
     const displayHistory = historyMovies.slice(0, 8);
 
     if (isLoading) {
-        return <div className="playlists-loading">Loading playlists...</div>;
+        return <div className="playlists-loading">Loading...</div>;
     }
 
     return (
@@ -283,27 +390,57 @@ const Account = () => {
                         <Link to="/history" className="account-seeall-btn">See All</Link>
                     </div>
 
-                    {/* History grid */}
-                    <div className="history-movies account-history-grid">
-                        {displayHistory.length > 0 ? (
-                            displayHistory.map(historyItem => {
-                                const movie = historyItem.movie || movies.find(m => m.id === historyItem.movieId);
-
-                                if (!movie) return null;
-
+                    {/* History Content */}
+                    {historyLoading ? (
+                        <div className="history-loading">
+                            <p>Loading your viewing history...</p>
+                        </div>
+                    ) : historyError ? (
+                        <div className="history-error">
+                            <p>{historyError}</p>
+                        </div>
+                    ) : displayHistory.length > 0 ? (
+                        <div className="history-movies account-history-grid">
+                            {displayHistory.map(movie => {
+                                const uniqueKey = `${movie.userId}-${movie.movieId}`;
                                 return (
-                                    <div key={historyItem.id} className="account-history-item">
-                                        <Link to={`/movies/${movie.id}`}>
-                                            <img src={movie.posterUrl} alt={movie.title} className="history-movie-poster" />
-                                            <h3 className="account-card-title">{movie.title}</h3>
+                                    <div key={uniqueKey} className="account-history-item">
+                                        <Link to={`/movies/${movie.movieId}`}>
+                                            <img
+                                                src={movie.posterUrl || '/placeholder-poster.jpg'}
+                                                alt={movie.title}
+                                                className="history-movie-poster"
+                                                onError={(e) => {
+                                                    e.target.src = '/placeholder-poster.jpg';
+                                                }}
+                                            />
+                                            <div className="history-item-info">
+                                                <h3 className="account-card-title">
+                                                    {movie.title}
+                                                    {movie.isPlaceholder && (
+                                                        <span className="placeholder-indicator"> (Loading...)</span>
+                                                    )}
+                                                </h3>
+                                                {movie.viewedAt && (
+                                                    <p className="history-viewed-time">
+                                                        {formatViewedAt(movie.viewedAt)}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </Link>
                                     </div>
                                 );
-                            })
-                        ) : (
-                            <p className="no-items-message">No history available</p>
-                        )}
-                    </div>
+                            })}
+                        </div>
+                    ) : (
+                        <div className="empty-history">
+                            <p>Your viewing history is empty.</p>
+                            <p>Start watching movies to see them here!</p>
+                            <Link to="/" className="browse-movies-btn">
+                                Browse Movies
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 {/* Playlists Section */}

@@ -595,6 +595,34 @@ export async function getUserHistory(userId) {
     }
 }
 
+// Универсальная функция для получения userId
+function getCurrentUserId() {
+    try {
+        // Сначала пробуем получить из localStorage
+        const userFromStorage = localStorage.getItem('user');
+        if (userFromStorage && userFromStorage !== 'undefined') {
+            const userData = JSON.parse(userFromStorage);
+            const userId = userData.id || userData.userId || userData.user_id;
+            if (userId) return userId;
+        }
+
+        // Если не нашли в user, пробуем получить из токена
+        const token = localStorage.getItem('accessToken');
+        if (token && token !== 'undefined') {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const userId = payload.sub || payload.userId || payload.user_id || payload.id;
+                if (userId) return userId;
+            } catch (tokenError) {
+                console.error('Error decoding token:', tokenError);
+            }
+        }
+    } catch (error) {
+        console.error("Error getting user ID:", error);
+    }
+    return null;
+}
+
 export async function addToHistory(movieId) {
     console.log('📺 Adding movie to history:', movieId);
 
@@ -602,32 +630,7 @@ export async function addToHistory(movieId) {
         throw new Error('Movie ID is required');
     }
 
-    // Получаем пользователя более надежным способом
-    let userId = null;
-
-    try {
-        const userFromStorage = localStorage.getItem('user');
-        if (userFromStorage && userFromStorage !== 'undefined') {
-            const userData = JSON.parse(userFromStorage);
-            userId = userData.id || userData.userId || userData.user_id;
-        }
-
-        // Если не нашли в user, пробуем получить из токена
-        if (!userId) {
-            const token = localStorage.getItem('accessToken');
-            if (token && token !== 'undefined') {
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    userId = payload.sub || payload.userId || payload.user_id || payload.id;
-                } catch (tokenError) {
-                    console.error('Error decoding token:', tokenError);
-                }
-            }
-        }
-    } catch (error) {
-        console.error("Error parsing user data:", error);
-    }
-
+    const userId = getCurrentUserId();
     if (!userId) {
         throw new Error('User not authenticated');
     }
@@ -635,16 +638,27 @@ export async function addToHistory(movieId) {
     try {
         // Проверяем, есть ли уже этот фильм в истории пользователя
         const existingHistory = await getUserHistory(userId);
-        const alreadyInHistory = existingHistory.some(item =>
+        const existingItem = existingHistory.find(item =>
             item.movieId === parseInt(movieId)
         );
 
         // Если фильм уже в истории, обновляем дату просмотра
-        if (alreadyInHistory) {
+        if (existingItem) {
             console.log('📺 Movie already in history, updating view time');
-            // Можно реализовать обновление существующей записи
-            // Пока просто не добавляем дубликат
-            return { message: 'Movie already in history' };
+
+            // Удаляем старую запись
+            await deleteHistoryItem(existingItem.id);
+
+            // Добавляем новую запись с текущим временем
+            const historyData = {
+                userId: parseInt(userId),
+                movieId: parseInt(movieId),
+                viewedAt: new Date().toISOString()
+            };
+
+            const res = await api.post('/History', historyData);
+            console.log('📺 History updated successfully:', res.data);
+            return res.data;
         }
 
         const historyData = {
@@ -671,15 +685,17 @@ export async function addToHistory(movieId) {
     }
 }
 
-export async function deleteHistoryItem(id) {
-    console.log('🗑️ Deleting history item:', id);
+// Теперь принимает два параметра: userId и movieId
+export async function deleteHistoryItem(userId, movieId) {
+    console.log('🗑️ Deleting history item:', { userId, movieId });
 
-    if (!id) {
-        throw new Error('History item ID is required');
+    if (!userId || !movieId) {
+        throw new Error('User ID and Movie ID are required to delete history item');
     }
 
     try {
-        const res = await api.delete(`/History/${id}`);
+        // Формируем URL с двумя параметрами
+        const res = await api.delete(`/History/${userId}/${movieId}`);
         console.log('🗑️ History item deleted successfully');
 
         return res.data;
@@ -696,11 +712,16 @@ export async function deleteHistoryItem(id) {
     }
 }
 
+// Исправленная функция очистки всей истории пользователя
 export async function clearUserHistory(userId) {
     console.log('🗑️ Clearing history for user:', userId);
 
     if (!userId) {
-        throw new Error('User ID is required');
+        // Если userId не передан, пытаемся получить его автоматически
+        userId = getCurrentUserId();
+        if (!userId) {
+            throw new Error('User ID is required');
+        }
     }
 
     try {
@@ -713,17 +734,29 @@ export async function clearUserHistory(userId) {
         console.error('Error clearing user history:', error);
 
         // Если специального endpoint нет, очищаем по одному элементу
-        if (error.response?.status === 404) {
+        if (error.response?.status === 404 || error.response?.status === 405) {
             console.log('🗑️ No bulk delete endpoint, clearing items individually');
 
             try {
                 // Получаем всю историю пользователя
                 const userHistory = await getUserHistory(userId);
 
-                // Удаляем каждый элемент по отдельности
-                const deletePromises = userHistory.map(item =>
-                    deleteHistoryItem(item.id || item.historyId)
-                );
+                if (userHistory.length === 0) {
+                    return { message: 'History is already empty' };
+                }
+
+                // Удаляем каждый элемент по отдельности используя составной ключ
+                const deletePromises = userHistory.map(item => {
+                    const itemUserId = item.userId;
+                    const itemMovieId = item.movieId;
+
+                    if (!itemUserId || !itemMovieId) {
+                        console.warn('History item without proper IDs:', item);
+                        return Promise.resolve();
+                    }
+
+                    return deleteHistoryItem(itemUserId, itemMovieId);
+                });
 
                 await Promise.all(deletePromises);
                 console.log('🗑️ All history items deleted successfully');
@@ -746,6 +779,13 @@ export async function clearUserHistory(userId) {
 // Дополнительная функция для получения статистики истории
 export async function getHistoryStats(userId) {
     console.log('📊 Getting history stats for user:', userId);
+
+    if (!userId) {
+        userId = getCurrentUserId();
+        if (!userId) {
+            throw new Error('User not authenticated');
+        }
+    }
 
     try {
         const history = await getUserHistory(userId);

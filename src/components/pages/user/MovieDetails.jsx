@@ -12,7 +12,7 @@ import NewTimecodeModal from '../../modals/NewTimecodeModal';
 import PlaylistModal from '../../modals/PlaylistModal';
 import Login from '../../authorization/Login';
 import SignUp from '../../authorization/SignUp';
-import {getSimilarMovies, getMovieDetails, getComments, postComment, getGenres, getMovies} from '../../../api';
+import {getSimilarMovies, getMovieDetails, getComments, postComment, getGenres, getMovies, addToHistory} from '../../../api';
 
 const MovieDetails = () => {
     const {movieId} = useParams();
@@ -41,6 +41,9 @@ const MovieDetails = () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
+    // Добавляем состояние для отслеживания добавления в историю
+    const [historyAdded, setHistoryAdded] = useState(false);
+
     useEffect(() => {
         getGenres()
             .then(data => setGenres(data))
@@ -60,6 +63,8 @@ const MovieDetails = () => {
             setError(null);
             // Сбрасываем состояние загрузки основного постера
             setImgLoaded(false);
+            // Сбрасываем флаг добавления в историю при смене фильма
+            setHistoryAdded(false);
 
             try {
                 // 1) Загружаем детали
@@ -98,7 +103,31 @@ const MovieDetails = () => {
         if (movieId) {
             fetchMovieData();
         }
-    }, [movieId]);
+    }, [movieId]); // Убираем isAuthenticated из зависимостей
+
+    // Отдельный useEffect для добавления в историю
+    useEffect(() => {
+        const addMovieToHistory = async () => {
+            // Проверяем все условия перед добавлением в историю
+            if (!movieId || !isAuthenticated() || historyAdded || loading) {
+                return;
+            }
+
+            try {
+                console.log('Adding movie to history:', movieId);
+                await addToHistory(movieId);
+                setHistoryAdded(true); // Отмечаем, что добавили в историю
+                console.log('Movie added to history successfully');
+            } catch (historyError) {
+                console.error('Error adding movie to history:', historyError);
+                // Не показываем ошибку пользователю, так как это не критично
+            }
+        };
+
+        // Добавляем небольшую задержку, чтобы убедиться что фильм загрузился
+        const timeoutId = setTimeout(addMovieToHistory, 500);
+        return () => clearTimeout(timeoutId);
+    }, [movieId, isAuthenticated, historyAdded, loading]);
 
     // Отдельный useEffect для загрузки рекомендаций после основной загрузки
     useEffect(() => {
