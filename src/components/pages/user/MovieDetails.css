@@ -24,22 +24,17 @@
 
 .poster-container {
   position: relative;
-  width: 300px;        /* фиксированные размеры */
+  width: 300px;
   height: 450px;
 }
 
 .poster-placeholder {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #1f1f2e;  /* фон до загрузки */
+  background-color: #1f1f2e;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* при желании добавьте спиннер:
-  background-image: url('/spinner.gif');
-  background-repeat: no-repeat;
-  background-position: center;
-  */
 }
 
 .movie-poster-detail {
@@ -80,47 +75,7 @@
   margin-bottom: 30px;
 }
 
-/*rating*/
-.movie-rating {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
-}
-
-.rating-value {
-  font-size: 14px;
-  font-weight: 600;
-  color: #666;
-}
-
-.rating-stars {
-  color: #f0c63e;
-  font-size: 18px;
-}
-
 /*details/storyline*/
-.content-section {
-  margin-top: 60px;
-  display: flex;
-  gap: 40px;
-  position: relative;
-}
-
-.details-container {
-  flex: 1;
-  padding: 20px 20px 20px 0;
-  border-radius: 5px;
-  background-color: transparent;
-}
-
-.storyline-container {
-  flex: 2;
-  padding: 20px 0;
-  border-radius: 5px;
-  background-color: transparent;
-}
-
 .content-section {
   margin-top: 60px;
   display: flex;
@@ -145,7 +100,7 @@
 /*DETAILS/STORYLINE*/
 .section-title {
   position: relative;
-  padding-bottom: 24px;    /* место под линию */
+  padding-bottom: 24px;
   margin-bottom: 32px;
   font-size: 20px;
   color: #666;
@@ -155,11 +110,11 @@
   z-index: 2;
 }
 
-/*gradient line - make all with same opacity*/
+/*gradient line - positioned below section titles*/
 .content-section::before {
   content: "";
   position: absolute;
-  top: 52px;
+  top: 76px; /* moved down to be below the section titles */
   left: 16px;
   right: 0;
   height: 1px;
@@ -171,7 +126,7 @@
 .content-section::after {
   content: "";
   position: absolute;
-  top: 49px;
+  top: 73px; /* adjusted to match the line position */
   left: 0;
   width: 10px;
   height: 10px;
@@ -179,18 +134,6 @@
   background-color: gold;
   z-index: 1;
 }
-
-/*lines sections*/
-.cast-section .section-title,
-.player-section .section-title,
-.comments-section .section-title {
-  position: relative;
-}
-
-
-
-
-
 
 .detail-item {
   margin-bottom: 0;
@@ -224,6 +167,12 @@
 /*player*/
 .player-section {
   margin-top: 60px;
+}
+
+.player-section .section-title,
+.comments-section .section-title,
+.recommendations-section .section-title {
+  position: relative;
 }
 
 /* ==== Видео плеер ==== */
@@ -267,7 +216,6 @@
 .play-button:hover {
   transform: scale(1.2);
 }
-
 
 .movie-icons {
   display: flex;
@@ -419,9 +367,10 @@
   color: #e53935;
   font-family: 'Poppins', sans-serif;
 }
+
 /* ——— Секция рекомендаций ——— */
 .recommendations-section {
-  margin-top: 60px;      /* отступ над гридом */
+  margin-top: 60px;
   position: relative;
   z-index: 1;
 }
@@ -447,6 +396,7 @@
   z-index: 2;
   transition: transform 0.2s ease;
 }
+
 .recommendation-item:hover {
   transform: translateY(-4px);
 }
@@ -472,3 +422,322 @@
   flex-grow: 1;
 }
 
+/*=== RATING SECTION ===*/
+.movie-rating-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: rgba(31, 31, 46, 0.5);
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.average-rating {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #444;
+}
+
+.rating-label {
+  display: block;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.rating-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #f0c63e;
+  margin-right: 15px;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.rating-count {
+  color: #888;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.no-rating {
+  color: #888;
+  font-style: italic;
+}
+
+/* User Rating Section */
+.user-rating-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.existing-review {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 3px solid #f0c63e;
+}
+
+.user-review-info {
+  margin-bottom: 15px;
+}
+
+.your-rating-label {
+  color: #f5ebdd;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.user-rating-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.rating-number {
+  color: #f0c63e;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.user-comment {
+  color: #ccc;
+  font-style: italic;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.review-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-rating-btn,
+.delete-rating-btn,
+.rate-movie-btn,
+.login-to-rate-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.rate-movie-btn {
+  background-color: #f0c63e;
+  color: #000;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.rate-movie-btn:hover {
+  background-color: #e6b800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(240, 198, 62, 0.3);
+}
+
+.edit-rating-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.edit-rating-btn:hover {
+  background-color: #45a049;
+}
+
+.delete-rating-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-rating-btn:hover {
+  background-color: #da190b;
+}
+
+.login-to-rate-btn {
+  background-color: #2196F3;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.login-to-rate-btn:hover {
+  background-color: #1976D2;
+}
+
+/* Rating Stars */
+.rating-star {
+  display: inline-block;
+  margin: 0 2px;
+  transition: all 0.2s ease;
+}
+
+.rating-star.interactive {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.rating-star.interactive:hover {
+  transform: scale(1.2);
+}
+
+.rating-star.filled {
+  color: #ffd700;
+}
+
+.rating-star.empty {
+  color: #ddd;
+}
+
+/* Rating Form Overlay */
+.rating-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+}
+
+.rating-form-container {
+  background-color: #1f1f2e;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid #333;
+}
+
+.rating-form-container h3 {
+  color: #f5ebdd;
+  margin-bottom: 25px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.rating-input-section {
+  margin-bottom: 25px;
+}
+
+.rating-input-section label {
+  display: block;
+  color: #f5ebdd;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.interactive-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.comment-input-section {
+  margin-bottom: 25px;
+}
+
+.comment-input-section label {
+  display: block;
+  color: #f5ebdd;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.comment-input-section textarea {
+  width: 100%;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #f5ebdd;
+  font-family: 'Poppins', sans-serif;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.comment-input-section textarea:focus {
+  border-color: #f0c63e;
+  outline: none;
+}
+
+.char-count {
+  text-align: right;
+  color: #888;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.rating-error {
+  color: #f44336;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(244, 67, 54, 0.1);
+  border-radius: 5px;
+  border-left: 3px solid #f44336;
+}
+
+.rating-form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.submit-rating-btn,
+.cancel-rating-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.submit-rating-btn {
+  background-color: #f0c63e;
+  color: #000;
+}
+
+.submit-rating-btn:hover:not(:disabled) {
+  background-color: #e6b800;
+  transform: translateY(-2px);
+}
+
+.submit-rating-btn:disabled {
+  background-color: #666;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.cancel-rating-btn {
+  background-color: #666;
+  color: #f5ebdd;
+}
+
+.cancel-rating-btn:hover:not(:disabled) {
+  background-color: #777;
+}

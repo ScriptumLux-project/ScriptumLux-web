@@ -831,3 +831,144 @@ export async function getHistoryStats(userId) {
         };
     }
 }
+
+// Reviews
+export async function getMovieReviews(movieId) {
+    console.log('⭐ Getting reviews for movie:', movieId);
+
+    try {
+        const res = await api.get(`/Reviews/movie/${movieId}`);
+        return res.data || [];
+    } catch (error) {
+        console.error('Error fetching movie reviews:', error);
+        if (error.response?.status === 404) {
+            return [];
+        }
+        throw error;
+    }
+}
+
+export async function getMovieRating(movieId) {
+    console.log('⭐ Getting rating for movie:', movieId);
+
+    try {
+        const res = await api.get(`/Reviews/movie/${movieId}/rating`);
+        return res.data;
+    } catch (error) {
+        console.error('Error fetching movie rating:', error);
+        if (error.response?.status === 404) {
+            return { averageRating: 0, totalReviews: 0 };
+        }
+        throw error;
+    }
+}
+
+export async function getUserReviewForMovie(userId, movieId) {
+    console.log('⭐ Getting user review:', { userId, movieId });
+
+    try {
+        const res = await api.get(`/Reviews/user/${userId}/movie/${movieId}`);
+        return res.data;
+    } catch (error) {
+        console.error('Error fetching user review:', error);
+        if (error.response?.status === 404) {
+            return null;
+        }
+        throw error;
+    }
+}
+
+export async function checkUserReview(userId, movieId) {
+    console.log('⭐ Checking if user has reviewed movie:', { userId, movieId });
+
+    try {
+        const res = await api.get(`/Reviews/user/${userId}/movie/${movieId}/exists`);
+        return res.data.exists;
+    } catch (error) {
+        console.error('Error checking user review:', error);
+        return false;
+    }
+}
+
+export async function createReview(movieId, rating, comment = '') {
+    console.log('⭐ Creating review:', { movieId, rating, comment });
+
+    const userId = getCurrentUserId();
+    if (!userId) {
+        throw new Error('User not authenticated');
+    }
+
+    if (!rating || rating < 1 || rating > 10) {
+        throw new Error('Rating must be between 1 and 10');
+    }
+
+    const reviewData = {
+        movieId: parseInt(movieId, 10),
+        userId: parseInt(userId, 10),
+        rating: parseInt(rating, 10),
+        comment: comment.trim() || null
+    };
+
+    try {
+        const res = await api.post('/Reviews', reviewData);
+        console.log('⭐ Review created successfully:', res.data);
+        return res.data;
+    } catch (error) {
+        console.error('Error creating review:', error);
+
+        if (error.response?.status === 400) {
+            const errorMessage = error.response.data?.message || 'Invalid review data';
+            throw new Error(errorMessage);
+        }
+
+        throw new Error('Failed to submit review');
+    }
+}
+
+export async function updateReview(reviewId, rating, comment = '') {
+    console.log('⭐ Updating review:', { reviewId, rating, comment });
+
+    if (!rating || rating < 1 || rating > 10) {
+        throw new Error('Rating must be between 1 and 10');
+    }
+
+    const updateData = {
+        rating: parseInt(rating, 10),
+        comment: comment.trim() || null
+    };
+
+    try {
+        const res = await api.put(`/Reviews/${reviewId}`, updateData);
+        console.log('⭐ Review updated successfully:', res.data);
+        return res.data;
+    } catch (error) {
+        console.error('Error updating review:', error);
+
+        if (error.response?.status === 404) {
+            throw new Error('Review not found');
+        } else if (error.response?.status === 400) {
+            const errorMessage = error.response.data?.message || 'Invalid review data';
+            throw new Error(errorMessage);
+        }
+
+        throw new Error('Failed to update review');
+    }
+}
+
+export async function deleteReview(reviewId) {
+    console.log('⭐ Deleting review:', reviewId);
+
+    try {
+        await api.delete(`/Reviews/${reviewId}`);
+        console.log('⭐ Review deleted successfully');
+        return true;
+    } catch (error) {
+        console.error('Error deleting review:', error);
+
+        if (error.response?.status === 404) {
+            throw new Error('Review not found');
+        }
+
+        throw new Error('Failed to delete review');
+    }
+}

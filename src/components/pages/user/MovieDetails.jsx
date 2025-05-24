@@ -12,12 +12,25 @@ import NewTimecodeModal from '../../modals/NewTimecodeModal';
 import PlaylistModal from '../../modals/PlaylistModal';
 import Login from '../../authorization/Login';
 import SignUp from '../../authorization/SignUp';
-import {getSimilarMovies, getMovieDetails, getComments, postComment, getGenres, getMovies, addToHistory} from '../../../api';
+import {
+    getSimilarMovies,
+    getMovieDetails,
+    getComments,
+    postComment,
+    getGenres,
+    getMovies,
+    addToHistory,
+    getMovieRating,
+    getUserReviewForMovie,
+    createReview,
+    updateReview,
+    deleteReview
+} from '../../../api';
 
 const MovieDetails = () => {
     const {movieId} = useParams();
     const navigate = useNavigate();
-    const {isAuthenticated} = useAuth();
+    const {isAuthenticated, user} = useAuth();
     const [imgLoaded, setImgLoaded] = useState(false);
     const [movie, setMovie] = useState(null);
     const [genres, setGenres] = useState([]);
@@ -30,7 +43,6 @@ const MovieDetails = () => {
     const [similarMovies, setSimilarMovies] = useState([]);
     const [recommendationsLoading, setRecommendationsLoading] = useState(false);
     const [recommendationsError, setRecommendationsError] = useState(null);
-    // Добавляем состояние для отслеживания загрузки постеров рекомендаций
     const [recommendationImagesLoaded, setRecommendationImagesLoaded] = useState({});
 
     const [isPlaying, setIsPlaying] = useState(false);
@@ -41,8 +53,15 @@ const MovieDetails = () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
-    // Добавляем состояние для отслеживания добавления в историю
     const [historyAdded, setHistoryAdded] = useState(false);
+
+    // Состояния для рейтинга
+    const [movieRating, setMovieRating] = useState({averageRating: 0, totalReviews: 0});
+    const [userReview, setUserReview] = useState(null);
+    const [selectedRating, setSelectedRating] = useState(0);
+    const [ratingLoading, setRatingLoading] = useState(false);
+    const [ratingError, setRatingError] = useState(null);
+    const [hoveredRating, setHoveredRating] = useState(0);
 
     useEffect(() => {
         getGenres()
@@ -61,9 +80,7 @@ const MovieDetails = () => {
 
             setLoading(true);
             setError(null);
-            // Сбрасываем состояние загрузки основного постера
             setImgLoaded(false);
-            // Сбрасываем флаг добавления в историю при смене фильма
             setHistoryAdded(false);
 
             try {
@@ -83,9 +100,32 @@ const MovieDetails = () => {
                     videoUrl: movieData.videoUrl
                 });
 
-                // 3) Загружаем комментарии
+                // 2) Загружаем рейтинг фильма
                 try {
-                    const commentData = await getComments({ movieId });
+                    const ratingData = await getMovieRating(movieId);
+                    setMovieRating(ratingData);
+                } catch (ratingErr) {
+                    console.error('Error fetching movie rating:', ratingErr);
+                    setMovieRating({averageRating: 0, totalReviews: 0});
+                }
+
+                // 3) Если пользователь авторизован, загружаем его отзыв
+                if (isAuthenticated() && user?.id) {
+                    try {
+                        const userReviewData = await getUserReviewForMovie(user.id, movieId);
+                        setUserReview(userReviewData);
+                        if (userReviewData) {
+                            setSelectedRating(userReviewData.rating);
+                        }
+                    } catch (reviewErr) {
+                        console.error('Error fetching user review:', reviewErr);
+                        setUserReview(null);
+                    }
+                }
+
+                // 4) Загружаем комментарии
+                try {
+                    const commentData = await getComments({movieId});
                     setComments(Array.isArray(commentData) ? commentData : []);
                 } catch {
                     console.error('Error fetching comments');
@@ -103,12 +143,11 @@ const MovieDetails = () => {
         if (movieId) {
             fetchMovieData();
         }
-    }, [movieId]); // Убираем isAuthenticated из зависимостей
+    }, [movieId, isAuthenticated, user?.id]);
 
     // Отдельный useEffect для добавления в историю
     useEffect(() => {
         const addMovieToHistory = async () => {
-            // Проверяем все условия перед добавлением в историю
             if (!movieId || !isAuthenticated() || historyAdded || loading) {
                 return;
             }
@@ -116,15 +155,13 @@ const MovieDetails = () => {
             try {
                 console.log('Adding movie to history:', movieId);
                 await addToHistory(movieId);
-                setHistoryAdded(true); // Отмечаем, что добавили в историю
+                setHistoryAdded(true);
                 console.log('Movie added to history successfully');
             } catch (historyError) {
                 console.error('Error adding movie to history:', historyError);
-                // Не показываем ошибку пользователю, так как это не критично
             }
         };
 
-        // Добавляем небольшую задержку, чтобы убедиться что фильм загрузился
         const timeoutId = setTimeout(addMovieToHistory, 500);
         return () => clearTimeout(timeoutId);
     }, [movieId, isAuthenticated, historyAdded, loading]);
@@ -149,12 +186,12 @@ const MovieDetails = () => {
                     top6.map(async sim => {
                         const details = await getMovieDetails(sim.movieId);
                         return {
-                            movieId:    sim.movieId,
-                            title:      sim.title,
+                            movieId: sim.movieId,
+                            title: sim.title,
                             description: sim.description,
-                            posterUrl:  details.posterUrl    || '/api/placeholder/200/300',
-                            rating:     details.rating,
-                            genreId:    details.genreId,
+                            posterUrl: details.posterUrl || '/api/placeholder/200/300',
+                            rating: details.rating,
+                            genreId: details.genreId,
                         };
                     })
                 );
@@ -177,19 +214,43 @@ const MovieDetails = () => {
         return g ? g.name : 'Not specified';
     };
 
-    const renderStars = (rating) => {
-        const stars = [];
-        const fullStars = Math.floor(rating / 2);
-        const hasHalfStar = rating % 2 >= 0.5;
+// В файле MovieDetails.js найдите функцию renderStars и замените её на эту:
 
-        for (let i = 0; i < 5; i++) {
-            if (i < fullStars) {
-                stars.push(<FaStar key={i}/>);
-            } else if (i === fullStars && hasHalfStar) {
-                stars.push(<FaStarHalfAlt key={i}/>);
+    const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null, hoveredValue = 0) => {
+        const stars = [];
+        let displayRating = rating;
+
+        if (interactive) {
+            if (hoveredValue > 0) {
+                displayRating = hoveredValue;
+            } else if (userReview && userReview.rating) {
+                displayRating = userReview.rating;
             } else {
-                stars.push(<FaRegStar key={i}/>);
+                displayRating = selectedRating;
             }
+        }
+
+        for (let i = 1; i <= 10; i++) {
+            const isFilled = i <= displayRating;
+
+            stars.push(
+                <span
+                    key={i}
+                    className={`rating-star ${interactive ? 'interactive' : ''} ${isFilled ? 'filled' : 'empty'}`}
+                    onClick={interactive ? () => onStarClick(i) : undefined}
+                    onMouseEnter={interactive ? () => onStarHover(i) : undefined}
+                    onMouseLeave={interactive ? () => onStarHover(0) : undefined}
+                    style={{
+                        cursor: interactive ? 'pointer' : 'default',
+                        color: isFilled ? '#ffd700' : '#ddd',
+                        fontSize: interactive ? '1.5rem' : '1rem',
+                        margin: '0 2px',
+                        transition: 'color 0.2s ease' // Добавляем плавный переход
+                    }}
+                >
+                {isFilled ? <FaStar/> : <FaRegStar/>}
+            </span>
+            );
         }
 
         return stars;
@@ -211,6 +272,115 @@ const MovieDetails = () => {
         } catch (error) {
             console.error('Error posting comment:', error);
             alert('Failed to post comment. Please try again later.');
+        }
+    };
+
+    // Функции для работы с рейтингом
+// В файле MovieDetails.js найдите функцию handleRateClick и замените её на эту:
+
+    const handleRateClick = async (newRating) => {
+        if (!isAuthenticated()) {
+            openLoginModal();
+            return;
+        }
+
+        // Убираем проверку на одинаковый рейтинг - позволяем изменять
+        setSelectedRating(newRating);
+
+        // Сразу отправляем рейтинг
+        setRatingLoading(true);
+        setRatingError(null);
+
+        try {
+            let result;
+            if (userReview && userReview.id) {
+                // Обновляем существующий отзыв
+                console.log('Updating existing review:', userReview.id, 'with rating:', newRating);
+                result = await updateReview(userReview.id, newRating, userReview.comment || '');
+            } else {
+                // Создаем новый отзыв
+                console.log('Creating new review for movie:', movieId, 'with rating:', newRating);
+                result = await createReview(movieId, newRating, '');
+            }
+
+            setUserReview(result);
+
+            // Обновляем общий рейтинг фильма
+            const updatedRating = await getMovieRating(movieId);
+            setMovieRating(updatedRating);
+
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+            setRatingError(error.message || 'Failed to submit rating. Please try again.');
+            // Возвращаем предыдущий рейтинг при ошибке
+            setSelectedRating(userReview ? userReview.rating : 0);
+        } finally {
+            setRatingLoading(false);
+        }
+    };
+
+    const handleRatingSubmit = async (e, directRating = null) => {
+        if (e) e.preventDefault();
+
+        const ratingToSubmit = directRating || selectedRating;
+
+        if (ratingToSubmit === 0) {
+            setRatingError('Please select a rating');
+            return;
+        }
+
+        setRatingLoading(true);
+        setRatingError(null);
+
+        try {
+            let result;
+            if (userReview) {
+                // Обновляем существующий отзыв
+                result = await updateReview(userReview.id, ratingToSubmit, userReview.comment || '');
+                setUserReview(result);
+            } else {
+                // Создаем новый отзыв
+                result = await createReview(movieId, ratingToSubmit, '');
+                setUserReview(result);
+            }
+
+            // Обновляем общий рейтинг фильма
+            const updatedRating = await getMovieRating(movieId);
+            setMovieRating(updatedRating);
+
+            setRatingError(null);
+
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+            setRatingError(error.message || 'Failed to submit rating. Please try again.');
+        } finally {
+            setRatingLoading(false);
+        }
+    };
+    const handleDeleteRating = async () => {
+        if (!userReview) return;
+
+        if (!window.confirm('Are you sure you want to delete your rating?')) {
+            return;
+        }
+
+        setRatingLoading(true);
+        try {
+            await deleteReview(userReview.id);
+            setUserReview(null);
+            setSelectedRating(0);
+
+
+            // Обновляем общий рейтинг фильма
+            const updatedRating = await getMovieRating(movieId);
+            setMovieRating(updatedRating);
+
+            alert('Rating deleted successfully!');
+        } catch (error) {
+            console.error('Error deleting rating:', error);
+            setRatingError('Failed to delete rating. Please try again.');
+        } finally {
+            setRatingLoading(false);
         }
     };
 
@@ -260,15 +430,12 @@ const MovieDetails = () => {
     const closeNewTimecodeModal = () => setIsNewTimecodeModalOpen(false);
     const closePlaylistModal = () => setIsPlaylistModalOpen(false);
 
-    // Функция для получения корректного ID фильма
     const getMovieId = (movie) => {
-        // Проверяем все возможные поля для ID
         const id = movie.movieId || movie.id || movie.Movie_ID || movie.movie_id;
         console.log('Getting movie ID from:', movie, 'Result:', id);
         return id;
     };
 
-    // Функция для получения корректного URL постера
     const getPosterUrl = (movie) => {
         const url = movie.posterUrl || movie.poster_url || movie.posterURL || movie.Poster_URL;
         console.log('Getting poster URL for movie:', {
@@ -279,7 +446,6 @@ const MovieDetails = () => {
         return url || '/api/placeholder/200/300';
     };
 
-    // Функция для обработки клика по рекомендации
     const handleRecommendationClick = (recommendedMovie) => {
         const targetMovieId = getMovieId(recommendedMovie);
 
@@ -294,21 +460,17 @@ const MovieDetails = () => {
             return;
         }
 
-        // Проверяем, что мы не переходим на ту же страницу
         if (targetMovieId.toString() === movieId.toString()) {
             console.log('Same movie, not navigating');
             return;
         }
 
-        // Используем navigate для программного перехода
         navigate(`/movies/${targetMovieId}`);
-        // Прокручиваем страницу вверх после перехода
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 100);
     };
 
-    // Функция для обработки загрузки изображения рекомендации
     const handleRecommendationImageLoad = (movieId) => {
         setRecommendationImagesLoaded(prev => ({
             ...prev,
@@ -316,14 +478,12 @@ const MovieDetails = () => {
         }));
     };
 
-    // Функция для обработки ошибки загрузки изображения рекомендации
     const handleRecommendationImageError = (e, movieId) => {
         console.log('Image load error for movie:', movieId);
         console.log('Failed URL:', e.target.src);
         console.log('Error event:', e);
-        e.target.onerror = null; // Предотвращаем бесконечный цикл
+        e.target.onerror = null;
         e.target.src = "/api/placeholder/200/300";
-        // Отмечаем как загруженное, чтобы убрать placeholder
         setRecommendationImagesLoaded(prev => ({
             ...prev,
             [movieId]: true
@@ -394,7 +554,7 @@ const MovieDetails = () => {
                             onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = "/api/placeholder/300/450";
-                                setImgLoaded(true); // Отмечаем как загруженное даже при ошибке
+                                setImgLoaded(true);
                             }}
                         />
                     </div>
@@ -403,14 +563,73 @@ const MovieDetails = () => {
                         <h1 className="movie-title-detail">{movie.title}</h1>
                         <p className="movie-description">{movie.description}</p>
 
-                        <div className="movie-rating">
-                            <span className="rating-value">{movie.rating?.toFixed(1) || 'N/A'}</span>
-                            <div className="rating-stars">
-                                {movie.rating ? renderStars(movie.rating) : 'No rating available'}
+                        {/* Улучшенный блок рейтинга */}
+                        <div className="movie-rating-section">
+                            <div className="average-rating">
+                                <span className="rating-label">Average Rating:</span>
+                                <span className="rating-value">
+                                    {movieRating.averageRating > 0 ? movieRating.averageRating.toFixed(1) : 'N/A'}
+                                </span>
+                                <div className="rating-display">
+                                    {movieRating.averageRating > 0 ?
+                                        renderStars(movieRating.averageRating) :
+                                        <span className="no-rating">No ratings yet</span>
+                                    }
+                                </div>
+                                <div className="rating-count">
+                                    {movieRating.totalReviews} {movieRating.totalReviews === 1 ? 'review' : 'reviews'}
+                                </div>
+                            </div>
+
+                            {/* Блок пользовательского рейтинга */}
+                            <div className="user-rating-section">
+                                {isAuthenticated() ? (
+                                    <div className="user-rating-controls">
+                                        <div className="rate-movie-section">
+<span className="rate-label">
+    {userReview ? 'Your rating :' : 'Rate this movie:'}
+</span>
+                                            <div className="interactive-rating">
+                                                {renderStars(
+                                                    0, // Передаем 0, так как логика отображения теперь внутри функции
+                                                    true,
+                                                    handleRateClick,
+                                                    setHoveredRating,
+                                                    hoveredRating
+                                                )}
+                                                <span className="rating-value">
+        {hoveredRating || (userReview ? userReview.rating : selectedRating)}/10
+    </span>
+                                            </div>
+                                            {userReview && userReview.comment && (
+                                                <div className="user-comment">
+                                                    "{userReview.comment}"
+                                                </div>
+                                            )}
+                                            {ratingLoading && (
+                                                <div className="rating-loading">
+                                                    Updating rating...
+                                                </div>
+                                            )}
+                                            {ratingError && (
+                                                <div className="rating-error">
+                                                    {ratingError}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="login-prompt">
+                                        <button onClick={openLoginModal} className="login-to-rate-btn">
+                                            Login to Rate
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 {/* Details/storyline */}
                 <div className="content-section">
@@ -431,7 +650,7 @@ const MovieDetails = () => {
                             <span className="detail-label">Genre:</span>
                             <div className="detail-value">
                                 <span className="genre-badge">
-                                    {formatGenre(movie.genreId) }</span>
+                                    {formatGenre(movie.genreId)}</span>
                             </div>
                         </div>
                     </div>
@@ -449,13 +668,13 @@ const MovieDetails = () => {
                     <h2 className="section-title">Watch Movie</h2>
 
                     <div className="video-container">
-                        { !isPlaying
+                        {!isPlaying
                             ? (
                                 <div
                                     className="video-placeholder"
                                     onClick={() => setIsPlaying(true)}
                                 >
-                                    <FaPlay className="play-button" />
+                                    <FaPlay className="play-button"/>
                                 </div>
                             ) : (
                                 <video
@@ -500,7 +719,7 @@ const MovieDetails = () => {
                                         key={movieIdKey}
                                         className="recommendation-item"
                                         onClick={() => handleRecommendationClick(movie)}
-                                        style={{ cursor: 'pointer' }}
+                                        style={{cursor: 'pointer'}}
                                     >
                                         <div className="recommendation-poster">
                                             {!isImageLoaded && (
